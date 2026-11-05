@@ -13,7 +13,7 @@ The application backend for SysKata's daily technical learning experience.
 
 ## Component boundaries
 
-The [web app](https://github.com/SysKata-project/web) consumes application contracts. The [labs component](https://github.com/SysKata-project/labs) provisions environments and executes assessments. The [content repository](https://github.com/SysKata-project/content) supplies versioned learning definitions. This service owns application state; lab execution and authored curriculum belong to their respective components.
+The [Flutter app](https://github.com/SysKata-project/app) consumes application contracts. The [labs component](https://github.com/SysKata-project/labs) provisions environments and executes assessments. The [content repository](https://github.com/SysKata-project/content) supplies versioned learning definitions. This service owns application state; lab execution and authored curriculum belong to their respective components.
 
 ## Proposed first milestone
 
