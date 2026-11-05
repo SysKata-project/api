@@ -21,11 +21,19 @@ Support one learner's lesson attempt from session creation through assessment an
 
 ## Development and contribution
 
-No backend framework, database, authentication provider, or API contract has been selected. There are no runnable services yet. Proposals should explain expected behavior and data ownership, including how retries avoid duplicate progress updates. Record cross-component decisions in [docs](https://github.com/SysKata-project/docs).
+The MVP baseline uses PostgreSQL and a modular API. Backend framework, authentication provider and formal OpenAPI contracts remain to be selected. There are no runnable services yet. Proposals should explain expected behavior and data ownership, including how retries avoid duplicate progress updates. Record cross-component decisions in [docs](https://github.com/SysKata-project/docs).
+
+## Implementation design
+
+- [Learning engine and proposed contracts](docs/learning-engine.md)
 
 ## Status
 
 Planning scaffold only; listed capabilities are planned.
+
+## MVP implementation tracking
+
+See the [OpenShift MVP tracker](https://github.com/SysKata-project/docs/issues/1) and [cross-repository backlog](https://github.com/SysKata-project/docs/blob/main/plans/mvp-backlog.md).
 
 ## License
 
