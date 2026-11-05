@@ -25,4 +25,10 @@ No backend framework, database, authentication provider, or API contract has bee
 
 ## Status
 
-Planning scaffold only; listed capabilities are planned. No license has been selected yet.
+Planning scaffold only; listed capabilities are planned.
+
+## License
+
+Copyright 2026 SysKata contributors.
+
+This repository, including its code, documentation, and learning content, is licensed under the [Apache License 2.0](LICENSE).
