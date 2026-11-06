@@ -21,7 +21,16 @@ Support one learner's lesson attempt from session creation through assessment an
 
 ## Development and contribution
 
-The MVP baseline uses PostgreSQL and a modular API. Backend framework, authentication provider and formal OpenAPI contracts remain to be selected. There are no runnable services yet. Proposals should explain expected behavior and data ownership, including how retries avoid duplicate progress updates. Record cross-component decisions in [docs](https://github.com/SysKata-project/docs).
+The backend baseline is Java 25 LTS, Quarkus and PostgreSQL, with self-hosted
+Keycloak selected for identity. The current scaffold validates development tools
+only; authentication, persistence and application endpoints are not implemented.
+
+See [Java development and quality gates](docs/development.md) for setup, rules,
+reports and the complete verification command:
+
+```sh
+./mvnw -B -ntp clean verify
+```
 
 ## Implementation design
 
@@ -29,7 +38,7 @@ The MVP baseline uses PostgreSQL and a modular API. Backend framework, authentic
 
 ## Status
 
-Planning scaffold only; listed capabilities are planned.
+Minimal Java/Quarkus tooling scaffold; listed application capabilities are planned.
 
 ## MVP implementation tracking
 
