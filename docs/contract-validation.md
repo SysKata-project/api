@@ -13,10 +13,11 @@ sh scripts/scan-secrets.sh history
 
 `API contracts / validate` runs the same tests and standalone validator on pull
 requests and pushes. Secret scanning stays separate. This contract-only issue
-starts from main and does not depend on the unmerged Java tooling scaffold in
-[api #9](https://github.com/SysKata-project/api/issues/9). After that scaffold is
-merged, Java quality gates remain required for backend code changes; this Python
-validator neither replaces nor weakens them.
+includes the Java tooling scaffold merged through
+[api #9](https://github.com/SysKata-project/api/issues/9). The required
+`Java verification` check runs alongside contract validation and secret scanning.
+Follow [Java development and quality gates](development.md) for its local
+verification command; this Python validator neither replaces nor weakens it.
 
 The OpenAPI specification validator checks document structure and local schema
 references. JSON Schema Draft 2020-12 with format checking validates positive and
