@@ -13,3 +13,11 @@ kubeconfig
 *.kubeconfig
 .kube/
 .aws/
+
+# Java build and IDE output
+target/
+.idea/
+*.iml
+.classpath
+.project
+.settings/

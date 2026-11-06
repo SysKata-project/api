@@ -4,7 +4,7 @@ Status: planned MVP baseline; endpoint names below are proposed contracts to for
 
 ## Runtime and storage
 
-One modular API owns identity integration, catalog access, sessions, grading, progression, review and rewards. PostgreSQL is the durable store. Backend framework, identity provider and hosting require an early decision. Use an isolated worker boundary for asynchronous lab dispatch/results; no Redis requirement for MVP.
+One modular API owns identity integration, catalog access, sessions, grading, progression, review and rewards. PostgreSQL is the durable store. Java/Quarkus and self-hosted Keycloak are selected; local development is the immediate baseline. Ongoing deployment policy remains deferred in docs #6. Use an isolated worker boundary for asynchronous lab dispatch/results; no Redis requirement for MVP.
 
 Initial tables: learners, enrollments, content_releases, learning_sessions, exercise_instances, attempts, skill_progress, review_schedule, reward_events, lab_sessions, assessments and outbox_jobs. Stable IDs, foreign keys, timestamps and uniqueness constraints are required. Answer/result JSONB supports exercise variants. Store bundle/exercise/evaluator/policy versions and skill evidence including hint/reveal usage. Enforce one completion reward per qualifying activity, not merely per HTTP request.
 
