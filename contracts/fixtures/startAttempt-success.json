@@ -1,0 +1,36 @@
+{
+  "name": "startAttempt-success",
+  "operation_id": "startAttempt",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 1,
+      "exercise_instance_id": "instance-1"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "attempt": {
+        "attempt_id": "attempt-1",
+        "exercise_instance_id": "instance-1",
+        "status": "open",
+        "assistance": {
+          "hint_ids": [],
+          "revealed": false
+        }
+      },
+      "session_revision": 2
+    }
+  },
+  "notes": ""
+}

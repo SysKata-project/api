@@ -13,3 +13,8 @@ kubeconfig
 *.kubeconfig
 .kube/
 .aws/
+
+# Local contract validation
+.venv-contracts/
+__pycache__/
+*.pyc

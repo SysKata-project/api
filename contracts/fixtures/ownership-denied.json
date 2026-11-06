@@ -1,0 +1,28 @@
+{
+  "name": "ownership-denied",
+  "operation_id": "getSession",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 404,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "error": {
+        "code": "not_found",
+        "message": "Fixture: not found",
+        "retryable": false,
+        "correlation_id": "correlation-1",
+        "recovery": "refresh_state",
+        "current_revision": null
+      }
+    }
+  },
+  "notes": ""
+}

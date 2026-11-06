@@ -1,0 +1,48 @@
+{
+  "name": "result-duplicate",
+  "operation_id": "deliverResult",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "assessment_id": "assessment-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "assessment_id": "assessment-1",
+      "lab_session_id": "lab-1",
+      "session_id": "session-lab-1",
+      "exercise_instance_id": "instance-lab-1",
+      "attempt_id": "attempt-lab-1",
+      "generation": 1,
+      "versions": {
+        "schema_version": "1.0.0",
+        "bundle_version": "1.0.0",
+        "policy_version": "1.0.0"
+      },
+      "exercise_revision": 1,
+      "evaluator": "fixture.lab",
+      "evaluator_version": 1,
+      "observed_at": "2026-11-06T15:00:00Z",
+      "outcome": "evaluated",
+      "criteria": [
+        {
+          "criterion_id": "criterion.ready",
+          "passed": true
+        }
+      ]
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "assessment_id": "assessment-1",
+      "disposition": "duplicate"
+    }
+  },
+  "notes": "No progress/reward/review mutation on this delivery."
+}

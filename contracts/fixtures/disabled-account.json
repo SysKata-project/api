@@ -1,0 +1,26 @@
+{
+  "name": "disabled-account",
+  "operation_id": "getProgress",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {}
+  },
+  "response": {
+    "status": 403,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "error": {
+        "code": "account_disabled",
+        "message": "Fixture: account disabled",
+        "retryable": false,
+        "correlation_id": "correlation-1",
+        "recovery": "contact_support",
+        "current_revision": null
+      }
+    }
+  },
+  "notes": ""
+}

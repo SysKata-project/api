@@ -1,0 +1,36 @@
+{
+  "name": "requestHint-success",
+  "operation_id": "requestHint",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1",
+      "attempt_id": "attempt-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 2,
+      "hint_id": "hint.resource"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "attempt_id": "attempt-1",
+      "assistance": {
+        "hint_ids": [
+          "hint.resource"
+        ],
+        "revealed": false
+      },
+      "text_markdown": "Use the pod resource type.",
+      "session_revision": 3
+    }
+  },
+  "notes": ""
+}

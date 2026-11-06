@@ -1,0 +1,94 @@
+{
+  "name": "resumed-assisted-attempt",
+  "operation_id": "getSession",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "session_id": "session-1",
+      "journey_id": "journey.fixture",
+      "lesson_id": "lesson.fixture",
+      "mode": "lesson",
+      "status": "active",
+      "revision": 3,
+      "versions": {
+        "schema_version": "1.0.0",
+        "bundle_version": "1.0.0",
+        "policy_version": "1.0.0"
+      },
+      "current_instance": {
+        "exercise_instance_id": "instance-1",
+        "question": {
+          "kind": "exercise",
+          "id": "exercise.choice",
+          "revision": 1,
+          "type": "single_choice",
+          "skill_ids": [
+            "skill.observe"
+          ],
+          "objective_ids": [
+            "objective.observe"
+          ],
+          "prompt": "Inspect pods in your assigned project.",
+          "source": {
+            "baseline": "OpenShift 4.22",
+            "reviewed_on": "2026-11-05",
+            "reference_ids": [
+              "reference.openshift"
+            ]
+          },
+          "options": [
+            {
+              "id": "pods",
+              "text": "Pods"
+            },
+            {
+              "id": "routes",
+              "text": "Routes"
+            }
+          ],
+          "hint_ids": [
+            "hint.resource"
+          ]
+        },
+        "evaluator": "fixture.choice",
+        "evaluator_version": 1
+      },
+      "current_attempt": {
+        "attempt_id": "attempt-1",
+        "exercise_instance_id": "instance-1",
+        "status": "open",
+        "assistance": {
+          "hint_ids": [
+            "hint.resource"
+          ],
+          "revealed": true
+        }
+      },
+      "pending_objective_ids": [
+        "objective.observe"
+      ],
+      "references": [
+        {
+          "kind": "reference",
+          "id": "reference.openshift",
+          "revision": 1,
+          "title": "OpenShift documentation",
+          "url": "https://docs.redhat.com/en/documentation/openshift_container_platform",
+          "baseline": "OpenShift 4.22",
+          "reviewed_on": "2026-11-05"
+        }
+      ]
+    }
+  },
+  "notes": ""
+}

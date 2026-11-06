@@ -1,0 +1,62 @@
+{
+  "name": "listJourneys-success",
+  "operation_id": "listJourneys",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "versions": {
+        "schema_version": "1.0.0",
+        "bundle_version": "1.0.0",
+        "policy_version": "1.0.0"
+      },
+      "journeys": [
+        {
+          "kind": "journey",
+          "id": "journey.fixture",
+          "revision": 1,
+          "title": "Schema example only",
+          "locale": "en",
+          "prerequisites": [],
+          "unit_ids": [
+            "unit.fixture"
+          ],
+          "source": {
+            "baseline": "OpenShift 4.22",
+            "reviewed_on": "2026-11-05",
+            "reference_ids": [
+              "reference.openshift"
+            ]
+          },
+          "runtime": {
+            "product": "openshift",
+            "curriculum_version": "4.22",
+            "tested_versions": [],
+            "requirements": [
+              "Assigned project; scoped learner identity"
+            ]
+          }
+        }
+      ],
+      "references": [
+        {
+          "kind": "reference",
+          "id": "reference.openshift",
+          "revision": 1,
+          "title": "OpenShift documentation",
+          "url": "https://docs.redhat.com/en/documentation/openshift_container_platform",
+          "baseline": "OpenShift 4.22",
+          "reviewed_on": "2026-11-05"
+        }
+      ]
+    }
+  },
+  "notes": ""
+}
