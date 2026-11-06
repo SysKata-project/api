@@ -1,0 +1,28 @@
+{
+  "name": "enroll-success",
+  "operation_id": "enroll",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "journey_id": "journey.fixture",
+      "timezone": "America/Denver"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "enrollment_id": "enrollment-1",
+      "journey_id": "journey.fixture",
+      "created_at": "2026-11-06T15:00:00Z",
+      "timezone": "America/Denver"
+    }
+  },
+  "notes": ""
+}

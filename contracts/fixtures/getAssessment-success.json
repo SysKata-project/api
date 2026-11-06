@@ -1,0 +1,25 @@
+{
+  "name": "getAssessment-success",
+  "operation_id": "getAssessment",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "assessment_id": "assessment-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "assessment_id": "assessment-1",
+      "lab_session_id": "lab-1",
+      "generation": 1,
+      "attempt_id": "attempt-lab-1",
+      "status": "pending"
+    }
+  },
+  "notes": ""
+}

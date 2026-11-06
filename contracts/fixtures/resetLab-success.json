@@ -1,0 +1,34 @@
+{
+  "name": "resetLab-success",
+  "operation_id": "resetLab",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 3,
+      "generation": 1
+    }
+  },
+  "response": {
+    "status": 202,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "lab_session_id": "lab-1",
+      "session_id": "session-lab-1",
+      "exercise_instance_id": "instance-lab-1",
+      "generation": 2,
+      "status": "resetting",
+      "expires_at": null,
+      "session_revision": 4,
+      "error": null
+    }
+  },
+  "notes": ""
+}

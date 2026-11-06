@@ -1,0 +1,39 @@
+{
+  "name": "key-conflict",
+  "operation_id": "submitAttempt",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1",
+      "attempt_id": "attempt-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 2,
+      "exercise_instance_id": "instance-1",
+      "answer": {
+        "type": "single_choice",
+        "option_id": "pods"
+      }
+    }
+  },
+  "response": {
+    "status": 409,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "error": {
+        "code": "idempotency_conflict",
+        "message": "Fixture: idempotency conflict",
+        "retryable": false,
+        "correlation_id": "correlation-1",
+        "recovery": "correct_request",
+        "current_revision": null
+      }
+    }
+  },
+  "notes": ""
+}

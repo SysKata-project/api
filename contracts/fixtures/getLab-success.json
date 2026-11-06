@@ -1,0 +1,28 @@
+{
+  "name": "getLab-success",
+  "operation_id": "getLab",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "lab_session_id": "lab-1",
+      "session_id": "session-lab-1",
+      "exercise_instance_id": "instance-lab-1",
+      "generation": 1,
+      "status": "ready",
+      "expires_at": "2026-11-06T16:00:00Z",
+      "session_revision": 3,
+      "error": null
+    }
+  },
+  "notes": ""
+}

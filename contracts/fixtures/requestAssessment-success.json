@@ -1,0 +1,35 @@
+{
+  "name": "requestAssessment-success",
+  "operation_id": "requestAssessment",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 3,
+      "generation": 1,
+      "attempt_id": "attempt-lab-1"
+    }
+  },
+  "response": {
+    "status": 202,
+    "headers": {
+      "Cache-Control": "no-store",
+      "Location": "/v1/assessments/assessment-1",
+      "Retry-After": 2
+    },
+    "body": {
+      "assessment_id": "assessment-1",
+      "status": "pending",
+      "status_url": "/v1/assessments/assessment-1",
+      "lab_session_id": "lab-1",
+      "generation": 1,
+      "session_revision": 4
+    }
+  },
+  "notes": ""
+}

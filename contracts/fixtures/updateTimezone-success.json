@@ -1,0 +1,25 @@
+{
+  "name": "updateTimezone-success",
+  "operation_id": "updateTimezone",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "timezone": "America/New_York"
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "timezone": "America/New_York",
+      "effective_at": "2026-11-07T07:00:00Z"
+    }
+  },
+  "notes": ""
+}

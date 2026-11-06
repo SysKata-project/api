@@ -1,0 +1,2761 @@
+openapi: 3.1.1
+info:
+  title: SysKata learning API
+  version: 1.0.0
+  description: 'Contract only; endpoints are not implemented. Normative lifecycle,
+    concurrency and security rules: docs/api-contract.md. Learner content schema 1.0.0;
+    learning policy 1.0.0.'
+servers:
+- url: https://api.example.invalid
+  description: Placeholder; configure per environment.
+security:
+- LearnerBearer: []
+tags:
+- name: Learner API
+- name: Internal assessments
+paths:
+  /v1/journeys:
+    get:
+      operationId: listJourneys
+      summary: List compatible published journeys
+      description: List compatible published journeys
+      tags:
+      - Learner API
+      parameters: []
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Catalog'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/me/enrollments:
+    post:
+      operationId: enroll
+      summary: Enroll or return existing journey enrollment
+      description: First enrollment sets the account IANA timezone. Later enrollments
+        must match it; use updateTimezone for changes. Unique learner/journey enrollment.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrollmentRequest'
+  /v1/me/journeys/{journey_id}:
+    get:
+      operationId: getJourney
+      summary: Get path, prerequisites and confirmed node availability
+      description: Get path, prerequisites and confirmed node availability
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/journey_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JourneyPath'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/learning-sessions:
+    post:
+      operationId: startSession
+      summary: Resume active journey session or create a version-pinned session
+      description: Resume active journey session or create a version-pinned session
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SessionRequest'
+  /v1/learning-sessions/{session_id}:
+    get:
+      operationId: getSession
+      summary: Resume confirmed session and open attempt assistance
+      description: Resume confirmed session and open attempt assistance
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/learning-sessions/{session_id}/attempts:
+    post:
+      operationId: startAttempt
+      summary: Start or resume the open attempt for the current instance
+      description: Starting an attempt grants no progress. Only one open attempt per
+        session. A genuinely new attempt starts unassisted; resuming an open attempt
+        preserves assistance.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptStarted'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartAttemptRequest'
+  /v1/learning-sessions/{session_id}/attempts/{attempt_id}:
+    get:
+      operationId: getAttempt
+      summary: Recover attempt and any committed result
+      description: Recover attempt and any committed result
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/attempt_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptDetail'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/learning-sessions/{session_id}/attempts/{attempt_id}/submission:
+    post:
+      operationId: submitAttempt
+      summary: Grade a choice, ordering or command answer atomically
+      description: Answer type and IDs must match the issued instance. Never execute
+        commands. lab_task is accepted only through trusted assessment. Replay identical
+        keys before revision checks; see normative transaction rules.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/attempt_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttemptResult'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+  /v1/learning-sessions/{session_id}/attempts/{attempt_id}/hints:
+    post:
+      operationId: requestHint
+      summary: Record current-attempt hint use before serving hint text
+      description: Record current-attempt hint use before serving hint text
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/attempt_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssistanceResponse'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HintRequest'
+  /v1/learning-sessions/{session_id}/attempts/{attempt_id}/reveal:
+    post:
+      operationId: revealAnswer
+      summary: Record current-attempt reveal before serving answer text
+      description: Record current-attempt reveal before serving answer text
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/session_id'
+      - $ref: '#/components/parameters/attempt_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssistanceResponse'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RevisionRequest'
+  /v1/me/progress:
+    get:
+      operationId: getProgress
+      summary: Read confirmed progress, review, XP, daily goal and streak
+      description: Read confirmed progress, review, XP, daily goal and streak
+      tags:
+      - Learner API
+      parameters: []
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Progress'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/me/timezone:
+    post:
+      operationId: updateTimezone
+      summary: Schedule timezone change at next midnight in old timezone
+      description: Schedule timezone change at next midnight in old timezone
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimezoneChange'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TimezoneRequest'
+  /v1/lab-sessions:
+    post:
+      operationId: createLab
+      summary: Authorize and enqueue provisioning for an eligible lab instance
+      description: Authorize and enqueue provisioning for an eligible lab instance
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabCreate'
+  /v1/lab-sessions/{lab_session_id}:
+    get:
+      operationId: getLab
+      summary: Read lab readiness, generation and expiry without credentials
+      description: Read lab readiness, generation and expiry without credentials
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /v1/lab-sessions/{lab_session_id}/terminal-connections:
+    post:
+      operationId: createTerminalConnection
+      summary: Issue short-lived single-use scoped terminal ticket
+      description: Only ready, unexpired current generation. Ticket is bound to subject,
+        lab and generation; at most 60 seconds to redeem, never later than lab expiry.
+        Authenticate gateway then submit ticket in first frame, never URL. No evaluator
+        credentials. Transport details in docs/api-contract.md.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TerminalConnection'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabMutation'
+  /v1/lab-sessions/{lab_session_id}/reset:
+    post:
+      operationId: resetLab
+      summary: Invalidate old generation and enqueue clean setup
+      description: Invalidate old generation and enqueue clean setup
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabMutation'
+  /v1/lab-sessions/{lab_session_id}/close:
+    post:
+      operationId: closeLab
+      summary: Revoke terminal access and enqueue idempotent teardown
+      description: Revoke terminal access and enqueue idempotent teardown
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LabSession'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabMutation'
+  /v1/lab-sessions/{lab_session_id}/assessments:
+    post:
+      operationId: requestAssessment
+      summary: Queue trusted assessment and return polling location
+      description: Queue trusted assessment and return polling location
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Successful response. Queued durably; poll Location.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssessmentAccepted'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+            Location:
+              description: Relative assessment polling URL.
+              schema:
+                type: string
+                pattern: ^/v1/assessments/
+            Retry-After:
+              description: Polling delay in seconds.
+              schema:
+                type: integer
+                minimum: 1
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssessmentRequest'
+  /v1/assessments/{assessment_id}:
+    get:
+      operationId: getAssessment
+      summary: Poll assessment without changing learner state
+      description: Poll assessment without changing learner state
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/assessment_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assessment'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+  /internal/v1/assessments/{assessment_id}/result:
+    post:
+      operationId: deliverResult
+      summary: Authenticate, validate bindings and apply result once
+      description: Authenticate, validate bindings and apply result once
+      tags:
+      - Internal assessments
+      parameters:
+      - $ref: '#/components/parameters/assessment_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultReceipt'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      security:
+      - WorkerBearer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TrustedResult'
+  /v1/me/account-deletion:
+    post:
+      operationId: deleteAccount
+      summary: Accept deletion and immediately disable account access
+      description: Persist deletion job and original 30-day deadline; disable API
+        access immediately including otherwise-valid tokens, revoke identity sessions
+        and lab/terminal access. Subsequent calls are forbidden, including retries;
+        see deletion recovery contract.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletionAccepted'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeletionRequest'
+components:
+  securitySchemes:
+    LearnerBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Keycloak learner access token; validate issuer, signature, expiry
+        and syskata-api audience; enforce active account and resource ownership.
+    WorkerBearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Dedicated Keycloak service-account access token with syskata-assessment-results
+        audience and assessment-result-writer role; deny learner principals. Bind
+        worker to persisted dispatch assignment.
+  parameters:
+    session_id:
+      name: session_id
+      in: path
+      required: true
+      schema: &id001
+        type: string
+        pattern: ^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$
+    attempt_id:
+      name: attempt_id
+      in: path
+      required: true
+      schema: *id001
+    lab_session_id:
+      name: lab_session_id
+      in: path
+      required: true
+      schema: *id001
+    assessment_id:
+      name: assessment_id
+      in: path
+      required: true
+      schema: *id001
+    journey_id:
+      name: journey_id
+      in: path
+      required: true
+      schema: *id001
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: 'Persist a UUID per logical mutation. Scope: authenticated subject,
+        HTTP method and concrete path. See docs/api-contract.md for replay ordering
+        and retention.'
+  schemas:
+    Id: *id001
+    Version:
+      type: string
+      pattern: ^[0-9]+\.[0-9]+\.[0-9]+$
+    Versions:
+      type: object
+      properties:
+        schema_version:
+          const: 1.0.0
+        bundle_version:
+          $ref: '#/components/schemas/Version'
+        policy_version:
+          const: 1.0.0
+      required:
+      - schema_version
+      - bundle_version
+      - policy_version
+      additionalProperties: false
+    Content_id:
+      type: string
+      pattern: ^[a-z][a-z0-9]*([.-][a-z0-9]+)*$
+    Content_source:
+      type: object
+      properties:
+        baseline:
+          type: string
+          minLength: 1
+        reviewed_on:
+          type: string
+          format: date
+        reference_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+      required:
+      - baseline
+      - reviewed_on
+      - reference_ids
+      additionalProperties: false
+    Content_runtime:
+      type: object
+      properties:
+        product:
+          const: openshift
+        curriculum_version:
+          const: '4.22'
+        tested_versions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 0
+          uniqueItems: true
+        requirements:
+          type: array
+          items:
+            type: string
+            minLength: 1
+          minItems: 0
+          uniqueItems: true
+      required:
+      - product
+      - curriculum_version
+      - tested_versions
+      - requirements
+      additionalProperties: false
+    Content_option:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Content_id'
+        text:
+          type: string
+          minLength: 1
+      required:
+      - id
+      - text
+      additionalProperties: false
+    Content_reference:
+      type: object
+      properties:
+        kind:
+          const: reference
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          format: uri
+          pattern: ^https://
+        baseline:
+          type: string
+          minLength: 1
+        reviewed_on:
+          type: string
+          format: date
+      required:
+      - kind
+      - id
+      - revision
+      - title
+      - url
+      - baseline
+      - reviewed_on
+      additionalProperties: false
+    Content_skill:
+      type: object
+      properties:
+        kind:
+          const: skill
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          uniqueItems: true
+        source:
+          $ref: '#/components/schemas/Content_source'
+      required:
+      - kind
+      - id
+      - revision
+      - title
+      - description
+      - prerequisites
+      - source
+      additionalProperties: false
+    Content_journey:
+      type: object
+      properties:
+        kind:
+          const: journey
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        locale:
+          type: string
+          pattern: ^[a-z]{2}(-[A-Z]{2})?$
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          uniqueItems: true
+        unit_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        source:
+          $ref: '#/components/schemas/Content_source'
+        runtime:
+          $ref: '#/components/schemas/Content_runtime'
+      required:
+      - kind
+      - id
+      - revision
+      - title
+      - locale
+      - prerequisites
+      - unit_ids
+      - source
+      - runtime
+      additionalProperties: false
+    Content_unit:
+      type: object
+      properties:
+        kind:
+          const: unit
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          uniqueItems: true
+        lesson_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        source:
+          $ref: '#/components/schemas/Content_source'
+      required:
+      - kind
+      - id
+      - revision
+      - title
+      - prerequisites
+      - lesson_ids
+      - source
+      additionalProperties: false
+    Content_lesson:
+      type: object
+      properties:
+        kind:
+          const: lesson
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          minLength: 1
+        prerequisites:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          uniqueItems: true
+        objectives:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                $ref: '#/components/schemas/Content_id'
+              description:
+                type: string
+                minLength: 1
+              skill_ids:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Content_id'
+                minItems: 1
+                uniqueItems: true
+            required:
+            - id
+            - description
+            - skill_ids
+            additionalProperties: false
+          minItems: 1
+          uniqueItems: true
+        exercise_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        estimated_minutes:
+          type: integer
+          minimum: 1
+        explanation_markdown:
+          type: string
+          minLength: 1
+        review_prompt:
+          type: string
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Content_source'
+      required:
+      - kind
+      - id
+      - revision
+      - title
+      - prerequisites
+      - objectives
+      - exercise_ids
+      - estimated_minutes
+      - explanation_markdown
+      - review_prompt
+      - source
+      additionalProperties: false
+    Content_single_choice:
+      type: object
+      properties:
+        kind:
+          const: exercise
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        type:
+          const: single_choice
+        skill_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        objective_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        prompt:
+          type: string
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Content_source'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_option'
+          minItems: 2
+          uniqueItems: true
+        hint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - kind
+      - id
+      - revision
+      - type
+      - skill_ids
+      - objective_ids
+      - prompt
+      - source
+      - options
+      - hint_ids
+      additionalProperties: false
+    Content_command_order:
+      type: object
+      properties:
+        kind:
+          const: exercise
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        type:
+          const: command_order
+        skill_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        objective_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        prompt:
+          type: string
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Content_source'
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_option'
+          minItems: 2
+          uniqueItems: true
+        hint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - kind
+      - id
+      - revision
+      - type
+      - skill_ids
+      - objective_ids
+      - prompt
+      - source
+      - steps
+      - hint_ids
+      additionalProperties: false
+    Content_command_entry:
+      type: object
+      properties:
+        kind:
+          const: exercise
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        type:
+          const: command_entry
+        skill_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        objective_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        prompt:
+          type: string
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Content_source'
+        hint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - kind
+      - id
+      - revision
+      - type
+      - skill_ids
+      - objective_ids
+      - prompt
+      - source
+      - hint_ids
+      additionalProperties: false
+    Content_lab_task:
+      type: object
+      properties:
+        kind:
+          const: exercise
+        id:
+          $ref: '#/components/schemas/Content_id'
+        revision:
+          type: integer
+          minimum: 1
+        type:
+          const: lab_task
+        skill_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        objective_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          uniqueItems: true
+        prompt:
+          type: string
+          minLength: 1
+        source:
+          $ref: '#/components/schemas/Content_source'
+        runtime:
+          $ref: '#/components/schemas/Content_runtime'
+        reset_behavior:
+          const: new-generation
+        hint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 1
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - kind
+      - id
+      - revision
+      - type
+      - skill_ids
+      - objective_ids
+      - prompt
+      - source
+      - runtime
+      - reset_behavior
+      - hint_ids
+      additionalProperties: false
+    Question:
+      oneOf:
+      - $ref: '#/components/schemas/Content_single_choice'
+      - $ref: '#/components/schemas/Content_command_order'
+      - $ref: '#/components/schemas/Content_command_entry'
+      - $ref: '#/components/schemas/Content_lab_task'
+    Catalog:
+      type: object
+      properties:
+        versions:
+          $ref: '#/components/schemas/Versions'
+        journeys:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_journey'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_reference'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - versions
+      - journeys
+      - references
+      additionalProperties: false
+    EnrollmentRequest:
+      type: object
+      properties:
+        journey_id:
+          $ref: '#/components/schemas/Content_id'
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+      required:
+      - journey_id
+      - timezone
+      additionalProperties: false
+    Enrollment:
+      type: object
+      properties:
+        enrollment_id: *id001
+        journey_id:
+          $ref: '#/components/schemas/Content_id'
+        created_at: &id005
+          type: string
+          format: date-time
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+      required:
+      - enrollment_id
+      - journey_id
+      - created_at
+      - timezone
+      additionalProperties: false
+    LessonNode:
+      type: object
+      properties:
+        lesson:
+          $ref: '#/components/schemas/Content_lesson'
+        status:
+          type: string
+          enum:
+          - locked
+          - available
+          - completed
+        unmet_prerequisite_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - lesson
+      - status
+      - unmet_prerequisite_ids
+      additionalProperties: false
+    JourneyPath:
+      type: object
+      properties:
+        versions:
+          $ref: '#/components/schemas/Versions'
+        journey:
+          $ref: '#/components/schemas/Content_journey'
+        units:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_unit'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/LessonNode'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_reference'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - versions
+      - journey
+      - units
+      - lessons
+      - references
+      additionalProperties: false
+    SessionRequest:
+      type: object
+      properties:
+        journey_id:
+          $ref: '#/components/schemas/Content_id'
+        mode:
+          type: string
+          enum:
+          - auto
+          - lesson
+          - review
+        lesson_id:
+          anyOf:
+          - $ref: '#/components/schemas/Content_id'
+          - type: 'null'
+      required:
+      - journey_id
+      - mode
+      - lesson_id
+      additionalProperties: false
+      description: lesson_id is required and non-null only for mode=lesson; otherwise
+        null. Resume the active session in this journey before selection.
+      allOf:
+      - if:
+          properties:
+            mode:
+              const: lesson
+        then:
+          properties:
+            lesson_id:
+              $ref: '#/components/schemas/Content_id'
+        else:
+          properties:
+            lesson_id:
+              type: 'null'
+    Assistance:
+      type: object
+      properties:
+        hint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        revealed: &id003
+          type: boolean
+      required:
+      - hint_ids
+      - revealed
+      additionalProperties: false
+    Attempt:
+      type: object
+      properties:
+        attempt_id: *id001
+        exercise_instance_id: *id001
+        status:
+          type: string
+          enum:
+          - open
+          - submitted
+          - awaiting_assessment
+          - cancelled
+        assistance:
+          $ref: '#/components/schemas/Assistance'
+      required:
+      - attempt_id
+      - exercise_instance_id
+      - status
+      - assistance
+      additionalProperties: false
+    Instance:
+      type: object
+      properties:
+        exercise_instance_id: *id001
+        question:
+          $ref: '#/components/schemas/Question'
+        evaluator:
+          $ref: '#/components/schemas/Content_id'
+        evaluator_version: &id002
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+      required:
+      - exercise_instance_id
+      - question
+      - evaluator
+      - evaluator_version
+      additionalProperties: false
+    Session:
+      type: object
+      properties:
+        session_id: *id001
+        journey_id:
+          $ref: '#/components/schemas/Content_id'
+        lesson_id:
+          anyOf:
+          - $ref: '#/components/schemas/Content_id'
+          - type: 'null'
+        mode:
+          type: string
+          enum:
+          - lesson
+          - review
+        status:
+          type: string
+          enum:
+          - active
+          - completed
+        revision: *id002
+        versions:
+          $ref: '#/components/schemas/Versions'
+        current_instance:
+          anyOf:
+          - $ref: '#/components/schemas/Instance'
+          - type: 'null'
+        current_attempt:
+          anyOf:
+          - $ref: '#/components/schemas/Attempt'
+          - type: 'null'
+        pending_objective_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_reference'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - session_id
+      - journey_id
+      - lesson_id
+      - mode
+      - status
+      - revision
+      - versions
+      - current_instance
+      - current_attempt
+      - pending_objective_ids
+      - references
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: completed
+        then:
+          properties:
+            current_instance:
+              type: 'null'
+            current_attempt:
+              type: 'null'
+            pending_objective_ids:
+              maxItems: 0
+        else:
+          properties:
+            current_instance:
+              $ref: '#/components/schemas/Instance'
+    StartAttemptRequest:
+      type: object
+      properties:
+        session_revision: *id002
+        exercise_instance_id: *id001
+      required:
+      - session_revision
+      - exercise_instance_id
+      additionalProperties: false
+    AttemptStarted:
+      type: object
+      properties:
+        attempt:
+          $ref: '#/components/schemas/Attempt'
+        session_revision: *id002
+      required:
+      - attempt
+      - session_revision
+      additionalProperties: false
+    HintRequest:
+      type: object
+      properties:
+        session_revision: *id002
+        hint_id:
+          $ref: '#/components/schemas/Content_id'
+      required:
+      - session_revision
+      - hint_id
+      additionalProperties: false
+    RevisionRequest:
+      type: object
+      properties:
+        session_revision: *id002
+      required:
+      - session_revision
+      additionalProperties: false
+    AssistanceResponse:
+      type: object
+      properties:
+        attempt_id: *id001
+        assistance:
+          $ref: '#/components/schemas/Assistance'
+        text_markdown:
+          type: string
+          minLength: 1
+          maxLength: 20000
+        session_revision: *id002
+      required:
+      - attempt_id
+      - assistance
+      - text_markdown
+      - session_revision
+      additionalProperties: false
+    Answer:
+      oneOf:
+      - type: object
+        properties:
+          type:
+            const: single_choice
+          option_id:
+            $ref: '#/components/schemas/Content_id'
+        required:
+        - type
+        - option_id
+        additionalProperties: false
+      - type: object
+        properties:
+          type:
+            const: command_order
+          step_ids:
+            type: array
+            items:
+              $ref: '#/components/schemas/Content_id'
+            minItems: 1
+            maxItems: 1000
+            uniqueItems: true
+        required:
+        - type
+        - step_ids
+        additionalProperties: false
+      - type: object
+        properties:
+          type:
+            const: command_entry
+          command:
+            type: string
+            minLength: 1
+            maxLength: 4096
+            pattern: ^[^\x00-\x1f\x7f]+$
+        required:
+        - type
+        - command
+        additionalProperties: false
+    Submission:
+      type: object
+      properties:
+        session_revision: *id002
+        exercise_instance_id: *id001
+        answer:
+          $ref: '#/components/schemas/Answer'
+      required:
+      - session_revision
+      - exercise_instance_id
+      - answer
+      additionalProperties: false
+    CriterionFeedback:
+      type: object
+      properties:
+        criterion_id:
+          $ref: '#/components/schemas/Content_id'
+        passed: *id003
+        misconception_code:
+          anyOf:
+          - $ref: '#/components/schemas/Content_id'
+          - type: 'null'
+        explanation:
+          type: string
+          minLength: 1
+          maxLength: 20000
+        reference_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+      required:
+      - criterion_id
+      - passed
+      - misconception_code
+      - explanation
+      - reference_ids
+      additionalProperties: false
+    SkillProgress:
+      type: object
+      properties:
+        skill_id:
+          $ref: '#/components/schemas/Content_id'
+        independent_successes: &id004
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        assisted_successes: *id004
+        mistakes: *id004
+        review_due_at:
+          anyOf:
+          - *id005
+          - type: 'null'
+        review_interval_days:
+          type: integer
+          enum:
+          - 1
+          - 7
+          - 15
+      required:
+      - skill_id
+      - independent_successes
+      - assisted_successes
+      - mistakes
+      - review_due_at
+      - review_interval_days
+      additionalProperties: false
+    TimezoneChange:
+      type: object
+      properties:
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+        effective_at: *id005
+      required:
+      - timezone
+      - effective_at
+      additionalProperties: false
+    Progress:
+      type: object
+      properties:
+        revision: *id002
+        confirmed_at: *id005
+        total_xp: *id004
+        completed_lesson_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        completed_checkpoint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillProgress'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+        pending_timezone_change:
+          anyOf:
+          - $ref: '#/components/schemas/TimezoneChange'
+          - type: 'null'
+        local_date:
+          type: string
+          format: date
+        daily_goal_completed: *id003
+        current_streak: *id004
+        longest_streak: *id004
+        transition_day: *id003
+      required:
+      - revision
+      - confirmed_at
+      - total_xp
+      - completed_lesson_ids
+      - completed_checkpoint_ids
+      - skills
+      - timezone
+      - pending_timezone_change
+      - local_date
+      - daily_goal_completed
+      - current_streak
+      - longest_streak
+      - transition_day
+      additionalProperties: false
+    Reward:
+      type: object
+      properties:
+        event_id: *id001
+        type:
+          type: string
+          enum:
+          - lesson
+          - review
+          - checkpoint
+        subject_id:
+          $ref: '#/components/schemas/Content_id'
+        xp:
+          type: integer
+          enum:
+          - 5
+          - 10
+          - 25
+        credited_date:
+          type: string
+          format: date
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+      required:
+      - event_id
+      - type
+      - subject_id
+      - xp
+      - credited_date
+      - timezone
+      additionalProperties: false
+    NextAction:
+      oneOf:
+      - type: object
+        properties:
+          type:
+            const: continue
+          session_id: *id001
+        required:
+        - type
+        - session_id
+        additionalProperties: false
+      - type: object
+        properties:
+          type:
+            const: remediate
+          session_id: *id001
+        required:
+        - type
+        - session_id
+        additionalProperties: false
+      - type: object
+        properties:
+          type:
+            const: session_complete
+          session_id: *id001
+        required:
+        - type
+        - session_id
+        additionalProperties: false
+    AttemptResult:
+      type: object
+      properties:
+        attempt_id: *id001
+        exercise_instance_id: *id001
+        outcome:
+          type: string
+          enum:
+          - correct
+          - incorrect
+        assistance:
+          $ref: '#/components/schemas/Assistance'
+        evidence:
+          type: string
+          enum:
+          - independent
+          - assisted
+        versions:
+          $ref: '#/components/schemas/Versions'
+        exercise_revision: *id002
+        evaluator:
+          $ref: '#/components/schemas/Content_id'
+        evaluator_version: *id002
+        criteria:
+          type: array
+          items:
+            $ref: '#/components/schemas/CriterionFeedback'
+          minItems: 1
+          maxItems: 1000
+          uniqueItems: true
+        references:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_reference'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        progress:
+          $ref: '#/components/schemas/Progress'
+        rewards:
+          type: array
+          items:
+            $ref: '#/components/schemas/Reward'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        session_revision: *id002
+        next_action:
+          $ref: '#/components/schemas/NextAction'
+      required:
+      - attempt_id
+      - exercise_instance_id
+      - outcome
+      - assistance
+      - evidence
+      - versions
+      - exercise_revision
+      - evaluator
+      - evaluator_version
+      - criteria
+      - references
+      - progress
+      - rewards
+      - session_revision
+      - next_action
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            evidence:
+              const: independent
+        then:
+          properties:
+            assistance:
+              properties:
+                hint_ids:
+                  maxItems: 0
+                revealed:
+                  const: false
+        else:
+          properties:
+            assistance:
+              anyOf:
+              - properties:
+                  hint_ids:
+                    minItems: 1
+              - properties:
+                  revealed:
+                    const: true
+      - if:
+          properties:
+            outcome:
+              const: incorrect
+        then:
+          properties:
+            rewards:
+              maxItems: 0
+            criteria:
+              contains:
+                properties:
+                  passed:
+                    const: false
+        else:
+          properties:
+            criteria:
+              items:
+                properties:
+                  passed:
+                    const: true
+    AttemptDetail:
+      type: object
+      properties:
+        attempt:
+          $ref: '#/components/schemas/Attempt'
+        result:
+          anyOf:
+          - $ref: '#/components/schemas/AttemptResult'
+          - type: 'null'
+        assessment_id:
+          anyOf:
+          - *id001
+          - type: 'null'
+        session_revision: *id002
+      required:
+      - attempt
+      - result
+      - assessment_id
+      - session_revision
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            attempt:
+              properties:
+                status:
+                  const: submitted
+        then:
+          properties:
+            result:
+              $ref: '#/components/schemas/AttemptResult'
+        else:
+          properties:
+            result:
+              type: 'null'
+    LabCreate:
+      type: object
+      properties:
+        session_id: *id001
+        session_revision: *id002
+        exercise_instance_id: *id001
+        attempt_id: *id001
+      required:
+      - session_id
+      - session_revision
+      - exercise_instance_id
+      - attempt_id
+      additionalProperties: false
+    LabSession:
+      type: object
+      properties:
+        lab_session_id: *id001
+        session_id: *id001
+        exercise_instance_id: *id001
+        generation: *id002
+        status:
+          type: string
+          enum:
+          - provisioning
+          - ready
+          - resetting
+          - closing
+          - closed
+          - expired
+          - infrastructure_error
+        expires_at:
+          anyOf:
+          - *id005
+          - type: 'null'
+        session_revision: *id002
+        error:
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: 'null'
+      required:
+      - lab_session_id
+      - session_id
+      - exercise_instance_id
+      - generation
+      - status
+      - expires_at
+      - session_revision
+      - error
+      additionalProperties: false
+      allOf:
+      - if:
+          properties:
+            status:
+              const: ready
+        then:
+          properties:
+            expires_at:
+              type: string
+              format: date-time
+            error:
+              type: 'null'
+      - if:
+          properties:
+            status:
+              const: infrastructure_error
+        then:
+          properties:
+            error:
+              $ref: '#/components/schemas/Error'
+    LabMutation:
+      type: object
+      properties:
+        session_revision: *id002
+        generation: *id002
+      required:
+      - session_revision
+      - generation
+      additionalProperties: false
+    TerminalConnection:
+      type: object
+      properties:
+        lab_session_id: *id001
+        generation: *id002
+        url:
+          type: string
+          format: uri
+          pattern: ^wss://
+        ticket:
+          type: string
+          minLength: 1
+          maxLength: 2048
+        expires_at: *id005
+      required:
+      - lab_session_id
+      - generation
+      - url
+      - ticket
+      - expires_at
+      additionalProperties: false
+    AssessmentRequest:
+      type: object
+      properties:
+        session_revision: *id002
+        generation: *id002
+        attempt_id: *id001
+      required:
+      - session_revision
+      - generation
+      - attempt_id
+      additionalProperties: false
+    AssessmentAccepted:
+      type: object
+      properties:
+        assessment_id: *id001
+        status:
+          const: pending
+        status_url:
+          type: string
+          pattern: ^/v1/assessments/[a-zA-Z0-9._-]+$
+        lab_session_id: *id001
+        generation: *id002
+        session_revision: *id002
+      required:
+      - assessment_id
+      - status
+      - status_url
+      - lab_session_id
+      - generation
+      - session_revision
+      additionalProperties: false
+    Assessment:
+      oneOf:
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          generation: *id002
+          attempt_id: *id001
+          status:
+            const: pending
+        required:
+        - assessment_id
+        - lab_session_id
+        - generation
+        - attempt_id
+        - status
+        additionalProperties: false
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          generation: *id002
+          attempt_id: *id001
+          status:
+            const: completed
+          result:
+            $ref: '#/components/schemas/AttemptResult'
+        required:
+        - assessment_id
+        - lab_session_id
+        - generation
+        - attempt_id
+        - status
+        - result
+        additionalProperties: false
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          generation: *id002
+          attempt_id: *id001
+          status:
+            const: infrastructure_error
+          error:
+            $ref: '#/components/schemas/Error'
+        required:
+        - assessment_id
+        - lab_session_id
+        - generation
+        - attempt_id
+        - status
+        - error
+        additionalProperties: false
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          generation: *id002
+          attempt_id: *id001
+          status:
+            const: expired
+          error:
+            $ref: '#/components/schemas/Error'
+        required:
+        - assessment_id
+        - lab_session_id
+        - generation
+        - attempt_id
+        - status
+        - error
+        additionalProperties: false
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          generation: *id002
+          attempt_id: *id001
+          status:
+            const: superseded
+          error:
+            $ref: '#/components/schemas/Error'
+        required:
+        - assessment_id
+        - lab_session_id
+        - generation
+        - attempt_id
+        - status
+        - error
+        additionalProperties: false
+    TrustedCriterion:
+      type: object
+      properties:
+        criterion_id:
+          $ref: '#/components/schemas/Content_id'
+        passed: *id003
+      required:
+      - criterion_id
+      - passed
+      additionalProperties: false
+    TrustedResult:
+      oneOf:
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          session_id: *id001
+          exercise_instance_id: *id001
+          attempt_id: *id001
+          generation: *id002
+          versions: &id006
+            $ref: '#/components/schemas/Versions'
+          exercise_revision: *id002
+          evaluator: &id007
+            $ref: '#/components/schemas/Content_id'
+          evaluator_version: *id002
+          observed_at: *id005
+          outcome:
+            const: evaluated
+          criteria:
+            type: array
+            items:
+              $ref: '#/components/schemas/TrustedCriterion'
+            minItems: 1
+            maxItems: 1000
+            uniqueItems: true
+        required:
+        - assessment_id
+        - lab_session_id
+        - session_id
+        - exercise_instance_id
+        - attempt_id
+        - generation
+        - versions
+        - exercise_revision
+        - evaluator
+        - evaluator_version
+        - observed_at
+        - outcome
+        - criteria
+        additionalProperties: false
+      - type: object
+        properties:
+          assessment_id: *id001
+          lab_session_id: *id001
+          session_id: *id001
+          exercise_instance_id: *id001
+          attempt_id: *id001
+          generation: *id002
+          versions: *id006
+          exercise_revision: *id002
+          evaluator: *id007
+          evaluator_version: *id002
+          observed_at: *id005
+          outcome:
+            const: infrastructure_error
+          failure_code:
+            type: string
+            enum:
+            - cluster_unavailable
+            - evaluator_timeout
+            - dispatch_failed
+        required:
+        - assessment_id
+        - lab_session_id
+        - session_id
+        - exercise_instance_id
+        - attempt_id
+        - generation
+        - versions
+        - exercise_revision
+        - evaluator
+        - evaluator_version
+        - observed_at
+        - outcome
+        - failure_code
+        additionalProperties: false
+    ResultReceipt:
+      type: object
+      properties:
+        assessment_id: *id001
+        disposition:
+          type: string
+          enum:
+          - applied
+          - duplicate
+          - ignored_superseded
+          - ignored_expired
+      required:
+      - assessment_id
+      - disposition
+      additionalProperties: false
+    DeletionRequest:
+      type: object
+      properties:
+        confirmation:
+          const: delete-account
+      required:
+      - confirmation
+      additionalProperties: false
+    DeletionAccepted:
+      type: object
+      properties:
+        deletion_id: *id001
+        status:
+          const: accepted
+        accepted_at: *id005
+        active_data_delete_by: *id005
+        access_disabled:
+          const: true
+      required:
+      - deletion_id
+      - status
+      - accepted_at
+      - active_data_delete_by
+      - access_disabled
+      additionalProperties: false
+    TimezoneRequest:
+      type: object
+      properties:
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+      required:
+      - timezone
+      additionalProperties: false
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+          - invalid_request
+          - unauthenticated
+          - forbidden
+          - not_found
+          - stale_revision
+          - idempotency_conflict
+          - operation_pending
+          - attempt_closed
+          - ineligible
+          - generation_mismatch
+          - expired
+          - rate_limited
+          - infrastructure_unavailable
+          - result_conflict
+          - result_mismatch
+          - account_disabled
+          - unsupported_content
+        message:
+          type: string
+          minLength: 1
+          maxLength: 500
+        retryable: *id003
+        correlation_id: *id001
+        recovery:
+          type: string
+          enum:
+          - correct_request
+          - sign_in
+          - refresh_state
+          - retry_same_request
+          - start_new_lab
+          - contact_support
+        current_revision:
+          anyOf:
+          - *id002
+          - type: 'null'
+      required:
+      - code
+      - message
+      - retryable
+      - correlation_id
+      - recovery
+      - current_revision
+      additionalProperties: false
+    ErrorEnvelope:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+      additionalProperties: false
+  responses:
+    Error400:
+      description: Invalid request or content capability.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error401:
+      description: Missing/invalid bearer token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error403:
+      description: Disabled account or disallowed principal.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error404:
+      description: Not found, including resources owned by another learner.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error409:
+      description: State, revision, key or result conflict.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error410:
+      description: Expired lab/generation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error413:
+      description: Request exceeds 64 KiB decoded JSON.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error415:
+      description: Expected application/json.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+    Error429:
+      description: Rate limit; honor Retry-After.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+      headers:
+        Retry-After:
+          description: Seconds before retry.
+          schema:
+            type: integer
+            minimum: 1
+    Error503:
+      description: Infrastructure unavailable; no learner penalty.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorEnvelope'
+      headers:
+        Retry-After:
+          description: Seconds before retry.
+          schema:
+            type: integer
+            minimum: 1

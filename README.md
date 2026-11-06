@@ -24,6 +24,8 @@ Support one learner's lesson attempt from session creation through assessment an
 The backend baseline is Java 25 LTS, Quarkus and PostgreSQL, with self-hosted
 Keycloak selected for identity. The current scaffold validates development tools
 only; authentication, persistence and application endpoints are not implemented.
+The [OpenAPI contract](contracts/openapi.yaml) specifies the learner and internal
+assessment APIs.
 
 See [Java development and quality gates](docs/development.md) for setup, rules,
 reports and the complete verification command:
@@ -32,9 +34,14 @@ reports and the complete verification command:
 ./mvnw -B -ntp clean verify
 ```
 
+Run the separate [contract validation checks](docs/contract-validation.md) when
+changing the OpenAPI document, fixtures or contract validator.
+
 ## Implementation design
 
-- [Learning engine and proposed contracts](docs/learning-engine.md)
+- [Learning engine design](docs/learning-engine.md)
+- [API contract and lifecycle rules](docs/api-contract.md)
+- [Contract validation and CI](docs/contract-validation.md)
 
 ## Status
 

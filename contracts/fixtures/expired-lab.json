@@ -1,0 +1,35 @@
+{
+  "name": "expired-lab",
+  "operation_id": "requestAssessment",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 3,
+      "generation": 1,
+      "attempt_id": "attempt-lab-1"
+    }
+  },
+  "response": {
+    "status": 410,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "error": {
+        "code": "expired",
+        "message": "Fixture: expired",
+        "retryable": false,
+        "correlation_id": "correlation-1",
+        "recovery": "start_new_lab",
+        "current_revision": null
+      }
+    }
+  },
+  "notes": ""
+}
