@@ -1,0 +1,31 @@
+{
+  "name": "createTerminalConnection-success",
+  "operation_id": "createTerminalConnection",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 3,
+      "generation": 1
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "lab_session_id": "lab-1",
+      "generation": 1,
+      "url": "wss://terminal.example.invalid/connect",
+      "ticket": "fixture-only-not-a-credential",
+      "expires_at": "2026-11-06T15:01:00Z"
+    }
+  },
+  "notes": ""
+}

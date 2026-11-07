@@ -1,0 +1,28 @@
+{
+  "name": "deleteAccount-success",
+  "operation_id": "deleteAccount",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "confirmation": "delete-account"
+    }
+  },
+  "response": {
+    "status": 202,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "deletion_id": "deletion-1",
+      "status": "accepted",
+      "accepted_at": "2026-11-06T15:00:00Z",
+      "active_data_delete_by": "2026-12-06T15:00:00Z",
+      "access_disabled": true
+    }
+  },
+  "notes": ""
+}

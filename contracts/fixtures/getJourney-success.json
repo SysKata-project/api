@@ -1,0 +1,119 @@
+{
+  "name": "getJourney-success",
+  "operation_id": "getJourney",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "journey_id": "journey.fixture"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "versions": {
+        "schema_version": "1.0.0",
+        "bundle_version": "1.0.0",
+        "policy_version": "1.0.0"
+      },
+      "journey": {
+        "kind": "journey",
+        "id": "journey.fixture",
+        "revision": 1,
+        "title": "Schema example only",
+        "locale": "en",
+        "prerequisites": [],
+        "unit_ids": [
+          "unit.fixture"
+        ],
+        "source": {
+          "baseline": "OpenShift 4.22",
+          "reviewed_on": "2026-11-05",
+          "reference_ids": [
+            "reference.openshift"
+          ]
+        },
+        "runtime": {
+          "product": "openshift",
+          "curriculum_version": "4.22",
+          "tested_versions": [],
+          "requirements": [
+            "Assigned project; scoped learner identity"
+          ]
+        }
+      },
+      "units": [
+        {
+          "kind": "unit",
+          "id": "unit.fixture",
+          "revision": 1,
+          "title": "Fixture unit",
+          "prerequisites": [],
+          "lesson_ids": [
+            "lesson.fixture"
+          ],
+          "source": {
+            "baseline": "OpenShift 4.22",
+            "reviewed_on": "2026-11-05",
+            "reference_ids": [
+              "reference.openshift"
+            ]
+          }
+        }
+      ],
+      "lessons": [
+        {
+          "lesson": {
+            "kind": "lesson",
+            "id": "lesson.fixture",
+            "revision": 1,
+            "title": "Fixture lesson",
+            "prerequisites": [],
+            "objectives": [
+              {
+                "id": "objective.observe",
+                "description": "Inspect pods",
+                "skill_ids": [
+                  "skill.observe"
+                ]
+              }
+            ],
+            "exercise_ids": [
+              "exercise.choice",
+              "exercise.order",
+              "exercise.command",
+              "exercise.lab"
+            ],
+            "estimated_minutes": 5,
+            "explanation_markdown": "Pods expose workload state.",
+            "review_prompt": "How can you inspect pods?",
+            "source": {
+              "baseline": "OpenShift 4.22",
+              "reviewed_on": "2026-11-05",
+              "reference_ids": [
+                "reference.openshift"
+              ]
+            }
+          },
+          "status": "available",
+          "unmet_prerequisite_ids": []
+        }
+      ],
+      "references": [
+        {
+          "kind": "reference",
+          "id": "reference.openshift",
+          "revision": 1,
+          "title": "OpenShift documentation",
+          "url": "https://docs.redhat.com/en/documentation/openshift_container_platform",
+          "baseline": "OpenShift 4.22",
+          "reviewed_on": "2026-11-05"
+        }
+      ]
+    }
+  },
+  "notes": ""
+}

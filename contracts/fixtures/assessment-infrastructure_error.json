@@ -1,0 +1,33 @@
+{
+  "name": "assessment-infrastructure_error",
+  "operation_id": "getAssessment",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "assessment_id": "assessment-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "assessment_id": "assessment-1",
+      "lab_session_id": "lab-1",
+      "generation": 1,
+      "attempt_id": "attempt-lab-1",
+      "status": "infrastructure_error",
+      "error": {
+        "code": "infrastructure_unavailable",
+        "message": "Fixture: infrastructure unavailable",
+        "retryable": true,
+        "correlation_id": "correlation-1",
+        "recovery": "refresh_state",
+        "current_revision": null
+      }
+    }
+  },
+  "notes": ""
+}

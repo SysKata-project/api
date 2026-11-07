@@ -1,0 +1,101 @@
+{
+  "name": "submitAttempt-success",
+  "operation_id": "submitAttempt",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "session_id": "session-1",
+      "attempt_id": "attempt-1"
+    },
+    "headers": {
+      "Idempotency-Key": "00000000-0000-4000-8000-000000000001"
+    },
+    "body": {
+      "session_revision": 2,
+      "exercise_instance_id": "instance-1",
+      "answer": {
+        "type": "single_choice",
+        "option_id": "pods"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "attempt_id": "attempt-1",
+      "exercise_instance_id": "instance-1",
+      "outcome": "correct",
+      "assistance": {
+        "hint_ids": [],
+        "revealed": false
+      },
+      "evidence": "independent",
+      "versions": {
+        "schema_version": "1.0.0",
+        "bundle_version": "1.0.0",
+        "policy_version": "1.0.0"
+      },
+      "exercise_revision": 1,
+      "evaluator": "fixture.choice",
+      "evaluator_version": 1,
+      "criteria": [
+        {
+          "criterion_id": "criterion.observe",
+          "passed": true,
+          "misconception_code": null,
+          "explanation": "Pods show the requested workload state.",
+          "reference_ids": [
+            "reference.openshift"
+          ]
+        }
+      ],
+      "references": [
+        {
+          "kind": "reference",
+          "id": "reference.openshift",
+          "revision": 1,
+          "title": "OpenShift documentation",
+          "url": "https://docs.redhat.com/en/documentation/openshift_container_platform",
+          "baseline": "OpenShift 4.22",
+          "reviewed_on": "2026-11-05"
+        }
+      ],
+      "progress": {
+        "revision": 2,
+        "confirmed_at": "2026-11-06T15:00:00Z",
+        "total_xp": 10,
+        "completed_lesson_ids": [
+          "lesson.fixture"
+        ],
+        "completed_checkpoint_ids": [],
+        "skills": [],
+        "timezone": "America/Denver",
+        "pending_timezone_change": null,
+        "local_date": "2026-11-06",
+        "daily_goal_completed": true,
+        "current_streak": 1,
+        "longest_streak": 1,
+        "transition_day": false
+      },
+      "rewards": [
+        {
+          "event_id": "reward-1",
+          "type": "lesson",
+          "subject_id": "lesson.fixture",
+          "xp": 10,
+          "credited_date": "2026-11-06",
+          "timezone": "America/Denver"
+        }
+      ],
+      "session_revision": 3,
+      "next_action": {
+        "type": "session_complete",
+        "session_id": "session-1"
+      }
+    }
+  },
+  "notes": ""
+}

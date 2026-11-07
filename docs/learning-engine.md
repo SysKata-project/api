@@ -1,6 +1,9 @@
 # Learning API implementation design
 
-Status: planned MVP baseline; endpoint names below are proposed contracts to formalize in OpenAPI.
+Status: planned runtime; [OpenAPI 1.0.0](../contracts/openapi.yaml) and
+[contract lifecycle rules](api-contract.md) now specify the HTTP interface.
+The table below is an overview; the formal contract defines attempt start,
+submission, assistance and lab recovery separately.
 
 ## Runtime and storage
 
@@ -17,14 +20,15 @@ Initial tables: learners, enrollments, content_releases, learning_sessions, exer
 | GET /v1/me/journeys/{id} | Path with available, locked and completed nodes |
 | POST /v1/learning-sessions | Resume or create a version-pinned session and issue its first exercise |
 | GET /v1/learning-sessions/{id} | Confirmed position and current exercise |
-| POST /v1/learning-sessions/{id}/attempts | Grade an issued instance, commit outcome, return feedback and next action |
+| POST /v1/learning-sessions/{id}/attempts | Start/resume an attempt before recording assistance |
+| POST /v1/learning-sessions/{id}/attempts/{attempt_id}/submission | Grade an issued instance, commit outcome, return feedback and next action |
 | POST /v1/lab-sessions | Authorize/provision a lab for an eligible exercise instance |
 | GET /v1/lab-sessions/{id} | Readiness, expiry and authorized connection information |
 | POST /v1/lab-sessions/{id}/assessments | Persist assessment request; return 202 and status URL |
 | GET /v1/assessments/{id} | Pending/result/infrastructure-error status |
 | GET /v1/me/progress | Confirmed mastery evidence, review due, goals and streak |
 
-Define reset, close, hint-use and account-deletion contracts with the same ownership/idempotency rules. Authentication subject determines user identity; no caller-supplied score or level is trusted. Validate session ownership and enforce request size limits. Return stable error codes, retryability, correlation ID and recovery guidance.
+The formal contract defines reset, close, per-attempt hint/reveal and account-deletion operations with ownership/idempotency rules. Authentication subject determines user identity; no caller-supplied score or level is trusted. Validate session ownership and enforce request size limits. Return stable error codes, retryability, correlation ID and recovery guidance.
 
 An attempt carries exercise_instance_id and an exercise-specific answer, plus an Idempotency-Key header. An instance records the prompt variant and option ordering so the answer cannot be reinterpreted later. A response contains attempt ID, outcome, criterion feedback, hints/documentation references, confirmed progress/rewards, next action and session revision.
 

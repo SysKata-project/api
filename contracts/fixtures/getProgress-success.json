@@ -1,0 +1,31 @@
+{
+  "name": "getProgress-success",
+  "operation_id": "getProgress",
+  "valid": true,
+  "request": {
+    "path_parameters": {},
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "revision": 1,
+      "confirmed_at": "2026-11-06T15:00:00Z",
+      "total_xp": 0,
+      "completed_lesson_ids": [],
+      "completed_checkpoint_ids": [],
+      "skills": [],
+      "timezone": "America/Denver",
+      "pending_timezone_change": null,
+      "local_date": "2026-11-06",
+      "daily_goal_completed": false,
+      "current_streak": 0,
+      "longest_streak": 0,
+      "transition_day": false
+    }
+  },
+  "notes": ""
+}
