@@ -1,8 +1,8 @@
 # Java development and quality gates
 
-This repository currently contains only the scaffold needed to validate tooling
-for [api #9](https://github.com/SysKata-project/api/issues/9). It implements no
-HTTP endpoints, authentication, database persistence or learning features.
+The [service foundation](service-foundation.md) adds OIDC authentication, PostgreSQL
+migrations and account deletion on top of the tooling established in api #9.
+Catalog, grading and lab orchestration remain separate implementation issues.
 Owner-approved choices are in [development decisions](development-decisions.md).
 
 ## Reproducible local setup
@@ -25,8 +25,9 @@ Run the complete local and CI verification:
 This compiles Java, runs plain JUnit and in-process `@QuarkusTest` integration
 tests, packages the minimal Quarkus application, and enforces coverage, PMD,
 copy/paste detection, Checkstyle and formatting. It needs network access for the
-initial dependency downloads; it requires no database, container engine or
-credentials. The wrapper pins Maven **3.9.16**, wrapper **3.3.4**, and verifies
+initial dependency downloads and a disposable PostgreSQL fixture: run
+`sh scripts/test-database.sh start` first (Docker or Podman). Never use learner
+data in this fixture. See the service foundation for local development services. The wrapper pins Maven **3.9.16**, wrapper **3.3.4**, and verifies
 the Maven distribution SHA-256. No system Maven installation is required.
 
 Focused commands (the complete verification remains required before review):
@@ -91,8 +92,9 @@ coverage. The two scaffold tests intentionally cover different branches, and
 the proof script verifies that neither test alone satisfies the branch gate.
 
 The current integration scope is in-process Quarkus injection/runtime testing.
-Packaged-process `@QuarkusIntegrationTest`, native-image and database tests are
-not present and are not claimed as verified. Extend instrumentation and the gate
+Database and HTTP boundary tests now run against PostgreSQL. A separate
+packaged-process/Keycloak smoke script verifies real Code/PKCE authentication;
+native-image behavior is not claimed as verified. Extend instrumentation and the gate
 proofs when those scopes are introduced in implementation issues.
 
 ## Coding and component boundaries
