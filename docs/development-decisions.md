@@ -29,3 +29,16 @@ for pinned versions, enforcement scope and verification.
 - Exact versions and test scope are recorded in development guidance.
 
 Backend business features remain outside this tooling issue.
+
+## API foundation development identity defaults
+
+Accepted by the project owner on 2026-11-09 while working api #2:
+
+- Access tokens last 5 minutes; SSO sessions idle out after 30 minutes and have
+  an 8-hour maximum lifetime. Offline tokens are disabled for the client.
+- These are local development defaults, not a new deployed-session policy.
+
+Implementation pins: PostgreSQL 17.11 and Keycloak 26.8.2. The imported realm
+retains the accepted public-client Code/PKCE S256 flow. The exact loopback callback
+is for local verification; mobile platform callbacks must be registered explicitly
+in app #3/deployment configuration, without wildcard redirects.

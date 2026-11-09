@@ -65,7 +65,7 @@ with tempfile.TemporaryDirectory(prefix='syskata-gates-') as tmp:
     uncovered = directory / PROBE.parent / 'UncoveredProbe.java'
     uncovered.write_text('package org.syskata.api.scaffold;\nclass UncoveredProbe {\n'
                          + ''.join('  int value' + str(i) + '() { return ' + str(i) + '; }\n'
-                                   for i in range(30)) + '}\n')
+                                   for i in range(300)) + '}\n')
     run('line-coverage', directory, ['clean', 'verify'],
         ['coverage checks have not been met', 'lines covered ratio'])
     uncovered.unlink()

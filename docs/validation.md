@@ -61,3 +61,39 @@ integration test, native image, deployment or OpenShift behavior is validated by
 this tooling issue. Those remain in their implementation issues. Final PR CI
 results and review status are visible on the linked PR; local success alone is
 not approval or merge.
+
+## Service foundation evidence — 2026-11-09
+
+For [api #2](https://github.com/SysKata-project/api/issues/2), on the same pinned
+Java/Maven toolchain, macOS ARM64 and Podman:
+
+- Clean verification passed: 8 Java tests, packaging, PMD/CPD, Checkstyle and
+  Spotless. Combined production coverage is 130/137 lines (94.89%) and 52/57
+  branches (91.23%); the 80%/80% thresholds and absence of exclusions are unchanged.
+- Five Python/PostgreSQL operation tests passed for rollback, deletion retries,
+  deadline preservation, issuer confinement, lab-cleanup refusal, immutable release
+  metadata, reward uniqueness, foreign keys and deletion cascades.
+- Ten contract tests passed; OpenAPI 3.1.1 and all 59 fixtures validated.
+- Real Keycloak 26.8.2 Code/PKCE S256 login passed against the packaged API.
+  Access tokens worked; ID tokens were rejected. Accepted deletion immediately
+  denied the still-valid token; the worker removed the synthetic Keycloak user
+  and application data. Sanitized results: `target/identity-smoke.json`.
+- PostgreSQL 17.11 migrations applied on a fresh disposable fixture and repeated
+  startup validated migration history. Application and Keycloak dumps restored
+  into isolated databases. Reconciliation removed a synthetic account deleted
+  after the snapshot while preserving an active account; current evidence was
+  not restored backward. Results: `target/restore-evidence/summary.json`.
+- Source links, whitespace and secret scans are checked before publication.
+
+The initial real-token test found the Keycloak client needed its `basic` scope
+for the `sub` claim. The final realm includes it, and missing-subject tokens are
+explicitly rejected. OIDC warning logging was disabled after observing that
+library diagnostics can echo malformed token text. No real credentials or learner
+data were used. The smoke client handles localhost Secure cookies explicitly;
+this is not a deployed HTTP policy.
+
+These checks do not validate native images, mobile callbacks, deployed backups,
+full multi-service recovery, or future learning/lab endpoints. The pending lab
+cleanup adapter deliberately prevents deletion jobs with recorded labs from being
+marked complete. See the [service foundation](service-foundation.md) for limits
+and the linked implementation issues.
