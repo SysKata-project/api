@@ -2,8 +2,9 @@
 
 Tracking: [api #2](https://github.com/SysKata-project/api/issues/2).
 This introduces the runtime boundary and database, not catalog selection, grading,
-review, or lab orchestration. Those remain in api #3–#6. The only implemented
-learner operation is `POST /v1/me/account-deletion`; test-only ownership probes
+review, or lab orchestration. Those remain in api #3–#6. At the foundation milestone the only learner operation was
+`POST /v1/me/account-deletion`; [api #3](learning-sessions.md) adds catalog and
+session selection. Test-only ownership probes
 are compiled from test sources and are absent from the packaged application.
 
 ## Local development
