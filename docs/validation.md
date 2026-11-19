@@ -97,3 +97,29 @@ full multi-service recovery, or future learning/lab endpoints. The pending lab
 cleanup adapter deliberately prevents deletion jobs with recorded labs from being
 marked complete. See the [service foundation](service-foundation.md) for limits
 and the linked implementation issues.
+
+## Journey/session engine — api #3
+
+Validated locally on 2026-11-19 with the pinned JDK, Quarkus/Maven tools and
+PostgreSQL 17.11 disposable fixture:
+
+- `clean verify`: 21 passing Java tests, including seven database/HTTP session
+  tests and six bundle/strict-JSON tests. Coverage: 717/734 lines (97.68%) and
+  239/270 branches (88.52%); both 80% thresholds remain unchanged.
+- PMD, CPD, Checkstyle and Spotless passed without suppressions or exclusions.
+- Actual catalog, enrollment, journey, session-create and session-resume HTTP
+  responses passed the existing OpenAPI schemas. The 10 contract tests and all
+  59 existing positive/negative fixtures passed.
+- Five existing operation/database tests passed, including rollback and deletion.
+- All 12 deliberate-failure/recovery gate cases passed in disposable copies,
+  including both isolated coverage instrumentation paths and the corrected build.
+- GitHub `main` requires `Java verification` and `gitleaks`; the contract workflow
+  additionally validates the existing API fixtures.
+- Real Keycloak 26.8.2 Code/PKCE smoke passed, including access/ID-token
+  distinction, immediate account denial and identity deletion. Isolated application
+  and Keycloak database restore plus deletion reconciliation passed.
+
+The owner-approved boundary uses draft pilot fixtures only. Production capability
+registration remains empty; draft activation, actual grading, trusted checkpoint
+progression and mobile integration are not claimed. See
+[session implementation and activation boundaries](learning-sessions.md).
