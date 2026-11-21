@@ -23,8 +23,8 @@ Support one learner's lesson attempt from session creation through assessment an
 
 The backend baseline is Java 25 LTS, Quarkus and PostgreSQL, with self-hosted
 Keycloak for identity. The service foundation implements authenticated request
-boundaries, PostgreSQL migrations and account deletion. Other learning and lab
-operations remain planned.
+boundaries, PostgreSQL migrations and account deletion. The journey/session engine
+adds enrollment and durable selection; grading and lab orchestration remain planned.
 The [OpenAPI contract](contracts/openapi.yaml) specifies the learner and internal
 assessment APIs.
 
@@ -47,8 +47,9 @@ changing the OpenAPI document, fixtures or contract validator.
 
 ## Status
 
-Runnable authenticated service foundation; curriculum selection, grading, progress
-and lab orchestration remain in their implementation issues.
+Runnable authenticated service foundation and a journey/session engine validated
+with pilot fixtures. Production curriculum activation, grading, progress updates
+and lab orchestration remain gated on their implementation issues.
 
 ## MVP implementation tracking
 
@@ -63,4 +64,8 @@ This repository, including its code, documentation, and learning content, is lic
 ## Runnable service foundation
 
 See [local setup, authentication, persistence and recovery](docs/service-foundation.md)
-for api #2. Learning and lab endpoints beyond account deletion remain unimplemented.
+for api #2.
+
+The [journey/session engine](docs/learning-sessions.md) implements catalog,
+enrollment and durable deterministic selection. Its pilot fixtures are test-only;
+production activation remains gated on grading and trusted checkpoint integration.

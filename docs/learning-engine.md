@@ -1,7 +1,8 @@
 # Learning API implementation design
 
 Status: [authenticated service foundation](service-foundation.md) implemented locally;
-learning features remain planned. [OpenAPI 1.0.0](../contracts/openapi.yaml) and
+[journey/session selection](learning-sessions.md) is implemented with pilot-fixture validation;
+grading and lab orchestration remain planned. [OpenAPI 1.0.0](../contracts/openapi.yaml) and
 [contract lifecycle rules](api-contract.md) now specify the HTTP interface.
 The table below is an overview; the formal contract defines attempt start,
 submission, assistance and lab recovery separately.

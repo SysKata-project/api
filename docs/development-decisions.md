@@ -42,3 +42,11 @@ Implementation pins: PostgreSQL 17.11 and Keycloak 26.8.2. The imported realm
 retains the accepted public-client Code/PKCE S256 flow. The exact loopback callback
 is for local verification; mobile platform callbacks must be registered explicitly
 in app #3/deployment configuration, without wildcard redirects.
+
+## Session engine acceptance boundary
+
+Accepted by the project owner on 2026-11-19 while working api #3: accept the
+session engine validated with pilot fixtures. Production curriculum activation
+remains gated on api #4 grading and labs #3 trusted checkpoint integration.
+Draft bundles remain ineligible for production activation. This boundary does
+not waive session persistence, prerequisite, compatibility or rollback tests.
