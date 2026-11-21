@@ -20,7 +20,7 @@ public class Errors implements ExceptionMapper<Exception> {
       return response(403, "forbidden");
     }
     if (failure instanceof ApiFailure expected) {
-      return response(expected.status(), expected.code());
+      return response(expected.status(), expected.code(), expected.revision());
     }
     if (failure instanceof WebApplicationException web) {
       int status = web.getResponse().getStatus();
@@ -31,13 +31,17 @@ public class Errors implements ExceptionMapper<Exception> {
   }
 
   public static Response response(int status, String code) {
+    return response(status, code, null);
+  }
+
+  private static Response response(int status, String code, Long revision) {
     Map<String, Object> error = new LinkedHashMap<>();
     error.put("code", code);
     error.put("message", code.replace('_', ' '));
     error.put("retryable", status == 503);
     error.put("correlation_id", UUID.randomUUID().toString());
-    error.put("recovery", recovery(status));
-    error.put("current_revision", null);
+    error.put("recovery", revision == null ? recovery(status) : "refresh_state");
+    error.put("current_revision", revision);
     Response.ResponseBuilder response =
         Response.status(status)
             .entity(Map.of("error", error))

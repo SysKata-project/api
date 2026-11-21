@@ -69,3 +69,7 @@ for api #2.
 The [journey/session engine](docs/learning-sessions.md) implements catalog,
 enrollment and durable deterministic selection. Its pilot fixtures are test-only;
 production activation remains gated on grading and trusted checkpoint integration.
+
+Atomic text grading and the owner-approved partial-progress contract are documented
+in [attempt grading](docs/attempt-grading.md). Review/day/streak calculations remain
+api #6; no pilot content release is activated.

@@ -27,8 +27,8 @@ public final class BundleReader {
   private BundleReader() {}
 
   public static Bundle read(Path directory, String hash) throws IOException {
-    // No production evaluator is implemented until api #4 / labs #3. Fail closed.
-    return read(directory, hash, Set.of(), false);
+    // Real checkpoint adapters remain gated on labs #3; drafts still fail closed.
+    return read(directory, hash, TextGrading.CAPABILITIES, false);
   }
 
   static Bundle read(Path directory, String hash, Set<String> capabilities, boolean fixture)

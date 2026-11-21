@@ -117,11 +117,11 @@ class BundleTest {
     ObjectNode released = copy();
     released.put("release_eligible", true);
     Files.writeString(temp.resolve("manifest.json"), released.toString());
-    assertThrows(
-        ApiFailure.class,
-        () ->
-            BundleReader.read(
-                temp, JsonData.hash(Files.readAllBytes(temp.resolve("manifest.json")))));
+    // Synthetic release-reader proof only; no pilot artifact or approved hash is activated.
+    assertEquals(
+        "0.3.0",
+        BundleReader.read(temp, JsonData.hash(Files.readAllBytes(temp.resolve("manifest.json"))))
+            .version());
   }
 
   @Test

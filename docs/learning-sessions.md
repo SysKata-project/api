@@ -18,10 +18,9 @@ The authenticated endpoints follow the existing [OpenAPI contract](../contracts/
 - `GET /v1/me/journeys/{journey}` returns lessons with available/locked/completed
   states and unmet journey, unit, lesson and skill prerequisites.
 - `POST /v1/learning-sessions` resumes the active session for the requested
-  journey before considering a new mode/lesson. Otherwise `auto` chooses due
-  review, then the first eligible unfinished lesson. Explicit lesson mode allows
-  an unlocked completed lesson replay; explicit review without eligible due
-  work returns `409 ineligible`.
+  journey before considering a new mode/lesson. Under the approved api #4 interim boundary, `auto` chooses the first eligible
+  unfinished lesson and explicit review returns `409 ineligible` until api #6.
+  Explicit lesson mode allows an unlocked completed lesson replay.
 - `GET /v1/learning-sessions/{session}` reads an owner-scoped persisted snapshot,
   including the open/awaiting-assessment attempt and its recorded assistance.
   Missing and other learners' sessions both return 404.
@@ -42,7 +41,8 @@ prerequisite cycles. Completing a prerequisite uses durable completion reward
 records; independent and assisted skill successes both satisfy skill prerequisites.
 XP does not measure mastery.
 
-Review selects the earliest eligible due skill by UTC due instant, then skill ID,
+The retained review-selection engine (not enabled at the runtime boundary until
+api #6) selects the earliest eligible due skill by UTC due instant, then skill ID,
 and the first eligible exercise by stable ID. One due skill is selected per review
 session. Unavailable skills are skipped without rewriting their schedule. Its
 original due instant and skill ID are persisted for subsequent remediation/reward
@@ -54,7 +54,8 @@ response snapshot. `exercise_instances.presentation` stores the exact learner
 question; the instance separately pins exercise revision and evaluator/version.
 Schema/bundle/policy versions are pinned in the session response and database.
 An issued instance initially has no attempt. Attempt creation, grading, objective
-completion/remediation transitions and reward writes remain api #4. This engine
+completion/remediation transitions and reward writes are implemented by
+[api #4](attempt-grading.md). This engine
 never awards XP or claims that simply viewing a question completes an objective.
 The grading transaction must update the queue, pending objectives, issued instance,
 snapshot and session revision together. Its remediation ordering is already
@@ -107,11 +108,13 @@ version for new sessions and path views; it never rewrites active sessions,
 exercise presentation, attempts, completion rewards or skill evidence. Completed
 sessions remain readable with no current question/attempt or pending objectives.
 
-The production evaluator capability set is deliberately empty in this change.
+The initial api #3 production evaluator capability set was empty.
+[API #4](attempt-grading.md) now implements and registers the three text evaluators;
+the interim boundary disables due-review issuance until api #6.
 Neither fixture evaluators nor the draft pilot can pass normal loading. Tests use
 a package-scoped fixture reader; there is no HTTP endpoint or application setting
 to enable it. Implemented grading and trusted lab adapters must explicitly extend
-the production registry with tests in their owning issues. Those changes must
+the production registry with tests in their owning issues. Trusted lab integration must
 also enforce checkpoint A before administration and checkpoint B before pilot
 completion, which the draft text-only catalogs do not encode. This change does
 not authorize making those drafts release-eligible.
@@ -134,5 +137,5 @@ missing. CI runs it after Java verification. Run the existing contract, operatio
 identity/restore, quality-gate proof and secret-scan commands from
 [development guidance](development.md) as well.
 
-These checks do not claim production curriculum activation, grading, mobile
+The api #3 checks alone do not claim production curriculum activation, grading, mobile
 integration, a running lab gateway, or trusted checkpoint progression.

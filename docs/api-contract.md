@@ -1,9 +1,14 @@
-# Learning API contract 1.0.0
+# Learning API contract 1.1.0
 
-Status: proposed implementation contract for [api #1](https://github.com/SysKata-project/api/issues/1).
-The OpenAPI document and fixtures are executable specifications, not running
-endpoints. The accepted product decisions below remain authoritative. Review
-of this PR approves the proposed protocol details; it does not verify a backend.
+Status: versioned implementation contract from [api #1](https://github.com/SysKata-project/api/issues/1).
+The owner-approved [api #4 interim boundary](attempt-grading.md#partial-progress-and-compatibility)
+adds partial grading progress and defers review/day/streak calculation to api #6.
+This boundary overrides the full-progress and due-review behavior described below
+until api #6 implements it; accepted learning-policy rules remain unchanged.
+The OpenAPI document and fixtures specify both implemented and future endpoints.
+See [session](learning-sessions.md) and [grading](attempt-grading.md) documentation
+for implemented behavior and runtime evidence; the presence of a contract fixture
+does not prove an endpoint exists. Accepted product decisions remain authoritative.
 
 ## Sources and compatibility
 
