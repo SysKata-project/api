@@ -100,6 +100,13 @@ public class ContentCatalog {
     }
   }
 
+  synchronized Bundle pinned(String version) throws IOException, SQLException {
+    if (!bundles.containsKey(version)) reload();
+    Bundle result = bundles.get(version);
+    if (result == null) throw new ApiFailure(503, "unsupported_content");
+    return result;
+  }
+
   public synchronized Bundle current() throws IOException, SQLException {
     reload();
     if (active == null) throw new ApiFailure(503, "unsupported_content");

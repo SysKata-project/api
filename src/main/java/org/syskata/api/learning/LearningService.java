@@ -103,9 +103,15 @@ public class LearningService {
       q.setObject(1, learner);
       q.setString(2, journey);
       try (var rows = q.executeQuery()) {
-        if (rows.next()) return store.session(c, learner, rows.getObject(1, UUID.class));
+        if (rows.next()) {
+          JsonNode existing = store.session(c, learner, rows.getObject(1, UUID.class));
+          if (existing.path("mode").asText().equals("review"))
+            throw new ApiFailure(409, "ineligible");
+          return existing;
+        }
       }
     }
+    if (request.path("mode").asText().equals("review")) throw new ApiFailure(409, "ineligible");
     requireEnrollment(c, learner, journey);
     Bundle bundle = catalog.current();
     ObjectNode plan = SessionSelection.choose(c, learner, bundle, request);
@@ -163,7 +169,7 @@ public class LearningService {
     return result;
   }
 
-  private void saveInstance(
+  static void saveInstance(
       Connection c, UUID learner, UUID session, UUID instance, JsonNode current)
       throws SQLException {
     try (var q =

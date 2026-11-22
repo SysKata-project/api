@@ -50,3 +50,16 @@ session engine validated with pilot fixtures. Production curriculum activation
 remains gated on api #4 grading and labs #3 trusted checkpoint integration.
 Draft bundles remain ineligible for production activation. This boundary does
 not waive session persistence, prerequisite, compatibility or rollback tests.
+
+## Grading and progress ownership
+
+Accepted by the project owner on 2026-11-21 while working api #4: keep shared
+review-schedule, daily-goal and streak calculations in api #6. Agree an interim
+api #4 response contract rather than moving those calculations into grading.
+The owner subsequently approved the interim contract: grading returns confirmed
+XP, completed lesson/checkpoint IDs and skill evidence counters with explicit
+`status: partial`. Review schedules, daily goals and streaks are omitted. Due-review
+sessions remain unavailable until api #6. No placeholder values represent these
+deferred calculations. Preserve timestamped grading/completion evidence for api #6;
+this boundary defers api #4's review-change writes to api #6, without waiving
+transactional attempts, skill evidence, lesson rewards or replay safety.

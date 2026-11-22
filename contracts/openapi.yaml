@@ -1,8 +1,9 @@
 openapi: 3.1.1
 info:
   title: SysKata learning API
-  version: 1.0.0
-  description: 'Contract only; endpoints are not implemented. Normative lifecycle,
+  version: 1.1.0
+  description: 'Implemented and planned endpoints; see docs/attempt-grading.md for the
+    owner-approved partial-progress boundary and disabled due review. Normative lifecycle,
     concurrency and security rules: docs/api-contract.md. Learner content schema 1.0.0;
     learning policy 1.0.0.'
 servers:
@@ -2166,7 +2167,9 @@ components:
           maxItems: 1000
           uniqueItems: true
         progress:
-          $ref: '#/components/schemas/Progress'
+          oneOf:
+          - $ref: '#/components/schemas/Progress'
+          - $ref: '#/components/schemas/PartialProgress'
         rewards:
           type: array
           items:
@@ -2237,6 +2240,78 @@ components:
                 properties:
                   passed:
                     const: true
+    SkillEvidence:
+      type: object
+      properties:
+        skill_id:
+          $ref: '#/components/schemas/Content_id'
+        independent_successes:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        assisted_successes:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        mistakes:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+      required:
+      - skill_id
+      - independent_successes
+      - assisted_successes
+      - mistakes
+      additionalProperties: false
+    PartialProgress:
+      type: object
+      description: 'Confirmed grading evidence; review schedules and daily/streak accounting
+        are unavailable until api #6. Missing fields are not zero or false.'
+      properties:
+        revision:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+        confirmed_at:
+          type: string
+          format: date-time
+        total_xp:
+          type: integer
+          minimum: 0
+          maximum: 9007199254740991
+        completed_lesson_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        completed_checkpoint_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content_id'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillEvidence'
+          minItems: 0
+          maxItems: 1000
+          uniqueItems: true
+        status:
+          type: string
+          const: partial
+      required:
+      - revision
+      - confirmed_at
+      - total_xp
+      - completed_lesson_ids
+      - completed_checkpoint_ids
+      - skills
+      - status
+      additionalProperties: false
     AttemptDetail:
       type: object
       properties:

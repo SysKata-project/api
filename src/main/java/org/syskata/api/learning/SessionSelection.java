@@ -18,7 +18,7 @@ public final class SessionSelection {
     String journey = request.path("journey_id").asText();
     String mode = request.path("mode").asText();
     JourneyState state = new JourneyState(c, learner);
-    if (!mode.equals("lesson")) {
+    if (mode.equals("review")) {
       ObjectNode review = review(c, learner, bundle, journey, state);
       if (review != null) return review;
       if (mode.equals("review")) throw new ApiFailure(409, "ineligible");

@@ -53,6 +53,10 @@ public final class Bundle {
         .toList();
   }
 
+  JsonNode trusted(String id) {
+    return trustedEntities.get(id).deepCopy();
+  }
+
   public JsonNode assessment(String id) {
     return trustedEntities.get(id).path("assessment").deepCopy();
   }

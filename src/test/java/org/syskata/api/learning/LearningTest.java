@@ -234,21 +234,14 @@ class LearningTest {
     due("skill.unavailable", "2020-01-01T00:00:00Z");
     due("skill.oc.context", "2020-01-02T00:00:00Z");
     due("skill.oc.observe", "2020-01-03T00:00:00Z");
-    JsonNode session = start("auto", null, 200);
-    assertEquals("review", session.path("mode").asText());
-    assertTrue(session.path("lesson_id").isNull());
-    assertTrue(
-        JsonData.strings(session.path("current_instance").path("question").path("skill_ids"))
-            .contains("skill.oc.context"));
-    try (var c = database.getConnection();
-        var q = c.prepareStatement("SELECT selection_state FROM learning_sessions WHERE id=?")) {
-      q.setObject(1, UUID.fromString(session.path("session_id").asText()));
-      try (var rows = q.executeQuery()) {
-        rows.next();
-        assertEquals(
-            "2020-01-02T00:00:00Z",
-            JsonData.parse(rows.getString(1)).path("review_due_at").asText());
-      }
+    start("review", null, 409);
+    assertEquals("lesson", start("auto", null, 200).path("mode").asText());
+    try (var c = database.getConnection()) {
+      var plan =
+          SessionSelection.choose(
+              c, learner, BundleTest.fixture("0.3.0"), JsonData.parse(request("review", null)));
+      assertEquals("review", plan.path("mode").asText());
+      assertEquals("2020-01-02T00:00:00Z", plan.path("review_due_at").asText());
     }
   }
 

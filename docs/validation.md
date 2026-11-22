@@ -123,3 +123,39 @@ The owner-approved boundary uses draft pilot fixtures only. Production capabilit
 registration remains empty; draft activation, actual grading, trusted checkpoint
 progression and mobile integration are not claimed. See
 [session implementation and activation boundaries](learning-sessions.md).
+
+## API #4 atomic grading — 2026-11-21
+
+Owner-approved scope and deferred calculations are recorded in
+[development decisions](development-decisions.md#grading-and-progress-ownership)
+and [attempt grading](attempt-grading.md). No draft curriculum is activated.
+
+Local final-source validation on the pinned JDK/Maven toolchain:
+
+- `./mvnw -B -ntp clean verify`: 31 tests passed, including real HTTP/PostgreSQL
+  attempt transactions and simultaneous submissions/hint races. PMD, CPD,
+  Checkstyle, Spotless, packaging and unchanged coverage gates passed.
+- JaCoCo: 1,112/1,133 lines (98.15%) and 399/453 branches (88.08%).
+- All ten actual learning/attempt endpoint response files pass OpenAPI validation.
+  Ten contract tests and 62 positive/negative fixtures pass, including rejection
+  of partial progress with invented daily fields or a missing partial marker.
+- Five database/deletion-worker regression tests and all 12 quality-gate
+  failure/recovery proofs passed. The proofs ran against the same production
+  source before the final two additional regression tests were added.
+- Local documentation links and whitespace checks passed. Full-history secret
+  scanning passed before publication; staged/pre-push scans remain enabled.
+
+The standard local database initialization first failed with PostgreSQL
+`No space left on device`. A task-owned PostgreSQL 17.11 container with a 512 MiB
+in-memory data mount allowed the database/HTTP checks to run without deleting
+unrelated data. Podman still failed container-state operations with
+`unable to open database file: no such file or directory`. Consequently the local
+Keycloak/packaged-process smoke and restore scripts could not execute their first
+container command. Those checks are **not locally verified** for this change;
+PR CI runs both against a fresh Linux fixture before review readiness.
+
+The app's current full-progress parser requires adaptation in app #2 before
+runtime integration. Review schedule writes, review rewards, daily goals, streaks
+and timezone changes remain api #6. Trusted checkpoint progression and awards,
+pilot activation, live lab integration and mobile validation are not claimed by
+this text-grading deliverable.
