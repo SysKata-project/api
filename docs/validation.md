@@ -162,8 +162,8 @@ this text-grading deliverable.
 
 ## API #5 lab orchestration — 2026-11-22
 
-- Full Java `clean verify`: **47 tests passed**, zero failures/errors/skips.
-  JaCoCo: **97.40% lines (1836/1885)** and **80.60% branches (677/840)**.
+- Full Java `clean verify`: **48 tests passed**, zero failures/errors/skips.
+  JaCoCo: **97.33% lines (1859/1910)** and **80.37% branches (696/866)**.
   PMD, CPD, Checkstyle and Spotless passed without exclusions or gate changes.
 - OpenAPI 1.2.0: **23 operations, 64 positive/negative fixtures**; ten Python
   contract tests passed. Captured learning and lab HTTP responses validate against

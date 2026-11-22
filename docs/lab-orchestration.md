@@ -31,7 +31,11 @@ the durable intent for reconciliation. A close may be queued before allocation
 finishes; it runs after the provisioning intent resolves, without losing cleanup
 tracking. Polling reconciles lifecycle
 state and cleanup evidence; older in-flight responses cannot undo reset/close
-intent. The original remote lease is preserved across reset. Terminal registration
+intent. A queued reset that loses its eligibility to expiry is retired without blocking
+a subsequent close. The dispatcher refreshes control revisions only when the
+remote generation/state proves the operation has not already taken effect; lost
+acknowledgments retain the original replay body. The original remote lease is
+preserved across reset. Terminal registration
 is a bounded synchronous call so the ticket is registered before its plaintext
 is returned; the gateway stores only its hash. Plaintext replay responses stay
 in the API database and must be protected like other credential-bearing data.

@@ -103,7 +103,12 @@ public class LabDispatcher {
         finish(job.id());
         return;
       }
-      JsonNode response = client.call(path(job), wire(job));
+      JsonNode payload = wire(job);
+      if (payload == null) {
+        finish(job.id());
+        return;
+      }
+      JsonNode response = client.call(path(job), payload);
       UUID lab =
           UUID.fromString(
               job.payload().path(job.operation().equals("assess") ? "labId" : "id").asText());
@@ -149,20 +154,47 @@ public class LabDispatcher {
 
   private JsonNode wire(Job job) throws Exception {
     ObjectNode result = job.payload().deepCopy();
-    if (job.operation().equals("close") && result.path("revision").asLong() == 0) {
-      JsonNode remote =
-          client.call(
-              "/internal/labs/" + result.path("id").asText() + "?subject=" + job.learner(), null);
-      validateRemote(job.learner(), UUID.fromString(result.path("id").asText()), remote);
-      result.set("revision", remote.path("revision"));
-      try (var c = database.getConnection()) {
-        LabSql.update(
-            c, "UPDATE outbox_jobs SET payload=?::jsonb WHERE id=?", result.toString(), job.id());
-      }
+    if (java.util.Set.of("reset", "close").contains(job.operation())) {
+      result = prepareChange(job, result);
+      if (result == null) return null;
     }
-
     if (java.util.Set.of("reset", "close", "stage").contains(job.operation())) result.remove("id");
     return result;
+  }
+
+  private ObjectNode prepareChange(Job job, ObjectNode payload) throws Exception {
+    UUID id = UUID.fromString(payload.path("id").asText());
+    JsonNode remote = client.call("/internal/labs/" + id + "?subject=" + job.learner(), null);
+    validateRemote(job.learner(), id, remote);
+    boolean same = remote.path("generation").asLong() == payload.path("generation").asLong();
+    String state = remote.path("state").asText();
+    if (job.operation().equals("reset")) {
+      if (same && java.util.Set.of("expired", "closed", "infrastructure_error").contains(state)) {
+        try (var c = database.getConnection()) {
+          c.setAutoCommit(false);
+          LearningStore.lockLearner(c, job.learner());
+          LabSql.update(
+              c,
+              "UPDATE lab_sessions SET status=? WHERE id=? AND status='resetting'",
+              state.equals("infrastructure_error") ? state : "expired",
+              id);
+          c.commit();
+        }
+        return null;
+      }
+      // Reset increments generation. If it already happened, preserve the original replay body.
+      if (!same) return payload;
+    } else if (java.util.Set.of("closing", "closed").contains(state)
+        && payload.path("revision").asLong() > 0) {
+      return payload;
+    }
+    payload.set("revision", remote.path("revision"));
+    payload.set("generation", remote.path("generation"));
+    try (var c = database.getConnection()) {
+      LabSql.update(
+          c, "UPDATE outbox_jobs SET payload=?::jsonb WHERE id=?", payload.toString(), job.id());
+    }
+    return payload;
   }
 
   private void finish(UUID id) throws Exception {
@@ -222,7 +254,7 @@ public class LabDispatcher {
       var state = new AttemptState(c, learner, lab.session());
       boolean same = lab.generation() == remote.path("generation").asLong();
       // Old in-flight reads must never reverse reset, close, or expiry intents.
-      if (same
+      if ((same || cleanedAfterRejectedReset(lab, remote))
           && remote.path("revision").asLong() >= lab.remoteRevision()
           && !reverses(lab.status(), status)) {
         LabSql.update(
@@ -238,6 +270,12 @@ public class LabDispatcher {
       LabService.expire(c, LabRecord.owned(c, learner, id), state);
       c.commit();
     }
+  }
+
+  private boolean cleanedAfterRejectedReset(LabRecord lab, JsonNode remote) {
+    return java.util.Set.of("closing", "expired", "infrastructure_error").contains(lab.status())
+        && java.util.Set.of("closed", "expired").contains(remote.path("state").asText())
+        && remote.path("cleanupComplete").asBoolean();
   }
 
   private void terminal(Connection c, LabRecord lab, AttemptState state, String status)

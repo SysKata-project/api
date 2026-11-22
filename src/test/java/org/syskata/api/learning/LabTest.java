@@ -645,4 +645,25 @@ class LabTest {
     assertEquals("closed", get(prefix).path("status").asText());
     assertEquals(0, count("reward_events"));
   }
+
+  @Test
+  void queuedResetThatExpiresDoesNotBlockCleanup() throws Exception {
+    ready();
+    String id = lab.path("lab_session_id").asText();
+    String prefix = "/v1/lab-sessions/" + id;
+    post(
+        prefix + "/reset",
+        Map.of("session_revision", session.path("revision").asLong(), "generation", 1),
+        202);
+    labs.labs.get(id).put("state", "expired").put("revision", 2);
+    dispatcher.tick();
+    assertEquals("expired", get(prefix).path("status").asText());
+    post(
+        prefix + "/close",
+        Map.of("session_revision", get(path).path("revision").asLong(), "generation", 2),
+        202);
+    dispatcher.tick();
+    assertEquals("closed", get(prefix).path("status").asText());
+    assertEquals(0, count("reward_events"));
+  }
 }
