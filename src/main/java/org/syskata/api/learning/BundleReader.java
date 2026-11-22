@@ -27,8 +27,14 @@ public final class BundleReader {
   private BundleReader() {}
 
   public static Bundle read(Path directory, String hash) throws IOException {
-    // Real checkpoint adapters remain gated on labs #3; drafts still fail closed.
-    return read(directory, hash, TextGrading.CAPABILITIES, false);
+    Set<String> capabilities = new HashSet<>(TextGrading.CAPABILITIES);
+    capabilities.addAll(Set.of("openshift.foundations:1", "openshift.administration:1"));
+    Bundle bundle = read(directory, hash, capabilities, false);
+    for (JsonNode question : bundle.entities("exercise")) {
+      if (question.path("type").asText().equals("lab_task"))
+        LabProfile.scenario(question, bundle.assessment(question.path("id").asText()));
+    }
+    return bundle;
   }
 
   static Bundle read(Path directory, String hash, Set<String> capabilities, boolean fixture)

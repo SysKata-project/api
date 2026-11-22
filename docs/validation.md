@@ -159,3 +159,32 @@ runtime integration. Review schedule writes, review rewards, daily goals, streak
 and timezone changes remain api #6. Trusted checkpoint progression and awards,
 pilot activation, live lab integration and mobile validation are not claimed by
 this text-grading deliverable.
+
+## API #5 lab orchestration — 2026-11-22
+
+- Full Java `clean verify`: **48 tests passed**, zero failures/errors/skips.
+  JaCoCo: **97.33% lines (1859/1910)** and **80.37% branches (696/866)**.
+  PMD, CPD, Checkstyle and Spotless passed without exclusions or gate changes.
+- OpenAPI 1.2.0: **23 operations, 64 positive/negative fixtures**; ten Python
+  contract tests passed. Captured learning and lab HTTP responses validate against
+  the contract, including pending/completed assessment and callback receipts.
+- Packaged dispatch process launched twice against PostgreSQL and a loopback HTTP
+  service. A persisted remote allocation with a lost acknowledgment survived
+  process exit and completed on restart without allocating twice. The bounded
+  report is generated at `target/dispatch-evidence/summary.json` and CI repeats it.
+- Secret history scan and whitespace checks passed. Commit/push hooks remain active.
+- Local JVM: pinned Temurin 25.0.5+8. The existing Podman VM's API/SSH connections
+  did not respond, so local Java/dispatch tests used an isolated PostgreSQL **17.12**
+  instance on loopback port 55435. Repository/CI PostgreSQL remains pinned to
+  **17.11**. The existing container-based real-Keycloak, restore and gate-proof
+  checks must run in CI; they were not represented as locally rerun.
+- These tests prove API orchestration with synthetic content and controlled lab
+  responses. They do not prove live OpenShift, mobile or deployed pilot behavior.
+  Draft content remains inactive. The account-deletion purge/receipt limitation is
+  explicitly recorded in [lab orchestration](lab-orchestration.md).
+
+The line-coverage rejection probe now scales its entirely untested class to the
+baseline JaCoCo production-line count. Its old fixed 300-method probe no longer
+violated the unchanged 80% line threshold after the application grew. The proof
+still requires the specific coverage failure and a corrected full verification;
+no production exclusion, suppression or threshold change was introduced.

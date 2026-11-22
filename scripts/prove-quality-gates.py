@@ -6,6 +6,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
+import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / 'target/gate-evidence'
@@ -45,6 +46,11 @@ with tempfile.TemporaryDirectory(prefix='syskata-gates-') as tmp:
     original = (directory / PROBE).read_text()
     original_test = (directory / TEST).read_text()
     run('baseline', directory, ['clean', 'verify'])
+    baseline = ET.parse(directory / 'target/site/jacoco/jacoco.xml').getroot()
+    lines = baseline.find("./counter[@type='LINE']")
+    # Scale to the measured production denominator: a fixed probe stops testing
+    # the 80% line gate once the application is sufficiently large.
+    uncovered_lines = max(300, int(lines.attrib['missed']) + int(lines.attrib['covered']))
 
     (directory / PROBE).write_text(original.replace('return "ready";', 'return missingSymbol;'))
     run('compiler', directory, ['compile'], ['COMPILATION ERROR', 'missingSymbol'])
@@ -65,7 +71,7 @@ with tempfile.TemporaryDirectory(prefix='syskata-gates-') as tmp:
     uncovered = directory / PROBE.parent / 'UncoveredProbe.java'
     uncovered.write_text('package org.syskata.api.scaffold;\nclass UncoveredProbe {\n'
                          + ''.join('  int value' + str(i) + '() { return ' + str(i) + '; }\n'
-                                   for i in range(300)) + '}\n')
+                                   for i in range(uncovered_lines)) + '}\n')
     run('line-coverage', directory, ['clean', 'verify'],
         ['coverage checks have not been met', 'lines covered ratio'])
     uncovered.unlink()

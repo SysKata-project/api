@@ -93,7 +93,11 @@ final class AttemptState {
         detail.set(
             "result",
             rows.getString(6) == null ? JsonData.tree(null) : JsonData.parse(rows.getString(6)));
-        detail.putNull("assessment_id");
+        try (var assessment = LabSql.query(c, "SELECT id FROM assessments WHERE attempt_id=?", id);
+            var found = assessment.executeQuery()) {
+          if (found.next()) detail.put("assessment_id", found.getString(1));
+          else detail.putNull("assessment_id");
+        }
         detail.put("session_revision", revision);
         return detail;
       }

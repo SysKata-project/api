@@ -1,0 +1,23 @@
+{
+  "name": "getFaultStage-success",
+  "operation_id": "getFaultStage",
+  "valid": true,
+  "request": {
+    "path_parameters": {
+      "lab_session_id": "lab-1"
+    },
+    "headers": {}
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Cache-Control": "no-store"
+    },
+    "body": {
+      "lab_session_id": "lab-1",
+      "generation": 1,
+      "state": "complete"
+    }
+  },
+  "notes": ""
+}

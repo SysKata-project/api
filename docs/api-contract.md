@@ -1,4 +1,4 @@
-# Learning API contract 1.1.0
+# Learning API contract 1.2.0
 
 Status: versioned implementation contract from [api #1](https://github.com/SysKata-project/api/issues/1).
 The owner-approved [api #4 interim boundary](attempt-grading.md#partial-progress-and-compatibility)
@@ -9,6 +9,9 @@ The OpenAPI document and fixtures specify both implemented and future endpoints.
 See [session](learning-sessions.md) and [grading](attempt-grading.md) documentation
 for implemented behavior and runtime evidence; the presence of a contract fixture
 does not prove an endpoint exists. Accepted product decisions remain authoritative.
+
+Contract 1.2.0 adds the foundations fault-stage request/status endpoints.
+See [lab orchestration](lab-orchestration.md) for the implemented service boundary.
 
 ## Sources and compatibility
 
