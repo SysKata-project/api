@@ -67,7 +67,16 @@ Use a separate service-account principal and audience
 internal result route. Learner tokens are rejected even if otherwise valid.
 Match the worker principal to the persisted dispatch assignment. Worker secret
 injection belongs to deployment configuration; never deliver it to a learner.
-Use TLS for API and callback traffic. Restrict internal ingress independently of
+Use TLS for API and Keycloak traffic. **Accepted owner amendment, 2026-11-22
+(app #3):** the native browser return uses the exact app-owned callback
+`org.syskata.app:/oauth2redirect`, with PKCE S256, state and OIDC nonce validation.
+This is an operating-system handoff, not an HTTP endpoint. Register it explicitly
+in each environment's public `syskata-mobile` client; no wildcard redirects.
+The mobile app configures its API origin and HTTPS Keycloak realm issuer on first
+installation because clusters and endpoints may change. A server change requires
+sign-out; credentials and recovery data cannot cross issuer/API boundaries.
+The local loopback callback remains solely for the synthetic verification script.
+See [mobile HTTPS setup](mobile-identity.md). Restrict internal ingress independently of
 token validation. All resource queries enforce ownership, including nested
 session/attempt, lab and assessment bindings. Hide other learners' resources
 behind the same 404 as nonexistent resources; IDs are not authorization.

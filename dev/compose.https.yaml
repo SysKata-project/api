@@ -1,0 +1,13 @@
+# Overlay on compose.yaml. Existing persistent data is preserved.
+services:
+  identity:
+    command: ["start", "--import-realm"]
+    environment:
+      KC_HOSTNAME: ${KEYCLOAK_HTTPS_ORIGIN:?Set the exact external HTTPS origin}
+      KC_HTTP_ENABLED: "false"
+      KC_HTTPS_CERTIFICATE_FILE: /opt/keycloak/conf/mobile-tls/tls.crt
+      KC_HTTPS_CERTIFICATE_KEY_FILE: /opt/keycloak/conf/mobile-tls/tls.key
+    ports:
+      - "${KEYCLOAK_HTTPS_BIND:-127.0.0.1}:${KEYCLOAK_HTTPS_PORT:-8443}:8443"
+    volumes:
+      - ${KEYCLOAK_TLS_DIRECTORY:?Set an absolute directory containing tls.crt and tls.key}:/opt/keycloak/conf/mobile-tls:ro

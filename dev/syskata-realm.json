@@ -16,7 +16,8 @@
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
       "redirectUris": [
-        "http://localhost:8765/callback"
+        "http://localhost:8765/callback",
+        "org.syskata.app:/oauth2redirect"
       ],
       "webOrigins": [],
       "attributes": {
