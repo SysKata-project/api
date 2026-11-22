@@ -18,7 +18,7 @@ public final class SessionSelection {
     String journey = request.path("journey_id").asText();
     String mode = request.path("mode").asText();
     JourneyState state = new JourneyState(c, learner);
-    if (mode.equals("review")) {
+    if (mode.equals("review") || mode.equals("auto")) {
       ObjectNode review = review(c, learner, bundle, journey, state);
       if (review != null) return review;
       if (mode.equals("review")) throw new ApiFailure(409, "ineligible");
@@ -60,8 +60,9 @@ public final class SessionSelection {
       throws SQLException {
     try (var q =
         c.prepareStatement(
-            "SELECT skill_id,due_at FROM review_schedule WHERE learner_id=? AND due_at<=CURRENT_TIMESTAMP ORDER BY due_at,skill_id")) {
+            "SELECT skill_id,due_at FROM review_schedule WHERE learner_id=? AND due_at<=?::timestamptz ORDER BY due_at,skill_id")) {
       q.setObject(1, learner);
+      q.setString(2, java.time.Instant.now().toString());
       try (var rows = q.executeQuery()) {
         while (rows.next()) {
           String skill = rows.getString(1);

@@ -57,6 +57,7 @@ final class AttemptAdvance {
 
   private static String alternative(
       Bundle bundle, AttemptState state, JsonNode previous, String objective) {
+    if (state.plan.path("mode").asText().equals("review")) return previous.path("id").asText();
     List<String> choices =
         new ArrayList<>(
             JsonData.strings(

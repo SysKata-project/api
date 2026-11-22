@@ -3,6 +3,7 @@ package org.syskata.api.learning;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -230,7 +231,7 @@ class LabTest {
         var q =
             LabSql.query(
                 c,
-                "SELECT dispatch FROM assessments WHERE id=?",
+                "SELECT dispatch,created_at FROM assessments WHERE id=?",
                 UUID.fromString(accepted.path("assessment_id").asText()));
         var r = q.executeQuery()) {
       r.next();
@@ -259,7 +260,16 @@ class LabTest {
               "evaluator_version",
               "evaluatorVersion");
       bindings.forEach((k, v) -> b.set(k, d.path(v)));
-      b.put("observed_at", Instant.now().toString());
+      // Native test PostgreSQL and JVM clocks can differ by a few milliseconds.
+      // Wait for a causally valid observation; never relax production timestamp checks.
+      Instant created = r.getTimestamp(2).toInstant();
+      Instant observed = Instant.now();
+      for (int retry = 0; observed.isBefore(created) && retry < 100; retry++) {
+        Thread.sleep(2);
+        observed = Instant.now();
+      }
+      assertTrue(!observed.isBefore(created), "Fixture clocks did not converge");
+      b.put("observed_at", observed.toString());
       b.put("outcome", "evaluated");
       var criteria = b.putArray("criteria");
       for (String name :
@@ -665,5 +675,13 @@ class LabTest {
     dispatcher.tick();
     assertEquals("closed", get(prefix).path("status").asText());
     assertEquals(0, count("reward_events"));
+  }
+
+  @Test
+  void reviewSchedulingFromTrustedLabEvidence() throws Exception {
+    ready();
+    var accepted = assess();
+    var body = result(accepted, true);
+    results.receive(UUID.fromString(accepted.path("assessment_id").asText()), "worker-test", body);
   }
 }

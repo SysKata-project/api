@@ -210,7 +210,8 @@ class LearningTest {
         q.executeUpdate();
       }
       try (var q =
-          c.prepareStatement("INSERT INTO review_schedule VALUES (?,?,?::timestamptz,1)")) {
+          c.prepareStatement(
+              "INSERT INTO review_schedule(learner_id,skill_id,due_at,interval_days) VALUES (?,?,?::timestamptz,1)")) {
         q.setObject(1, learner);
         q.setString(2, skill);
         q.setString(3, time);
@@ -234,8 +235,8 @@ class LearningTest {
     due("skill.unavailable", "2020-01-01T00:00:00Z");
     due("skill.oc.context", "2020-01-02T00:00:00Z");
     due("skill.oc.observe", "2020-01-03T00:00:00Z");
-    start("review", null, 409);
-    assertEquals("lesson", start("auto", null, 200).path("mode").asText());
+    assertEquals("review", start("review", null, 200).path("mode").asText());
+    assertEquals("review", start("auto", null, 200).path("mode").asText());
     try (var c = database.getConnection()) {
       var plan =
           SessionSelection.choose(

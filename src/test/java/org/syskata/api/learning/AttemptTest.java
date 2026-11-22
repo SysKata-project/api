@@ -197,8 +197,8 @@ class AttemptTest {
     assertEquals("assisted", result.path("evidence").asText());
     assertEquals("session_complete", result.path("next_action").path("type").asText());
     assertEquals(10, result.path("progress").path("total_xp").asInt());
-    assertEquals("partial", result.path("progress").path("status").asText());
-    assertFalse(result.path("progress").has("daily_goal_completed"));
+    assertFalse(result.path("progress").has("status"));
+    assertTrue(result.path("progress").path("daily_goal_completed").asBoolean());
     assertEquals(
         1, result.path("progress").path("skills").get(0).path("assisted_successes").asInt());
     assertEquals(result, post(attempt + "/submission", key, body, 200));
@@ -223,7 +223,7 @@ class AttemptTest {
     assertEquals("completed", get(path, 200).path("status").asText());
     assertEquals(1, count("reward_events"));
     assertEquals(1, count("lesson_completion_events"));
-    assertEquals(0, count("review_schedule"));
+    assertTrue(count("review_schedule") > 0);
   }
 
   @Test
@@ -325,6 +325,8 @@ class AttemptTest {
                 }));
     assertEquals(0, count("reward_events"));
     assertEquals(0, count("skill_progress"));
+    assertEquals(0, count("review_schedule"));
+    assertEquals(0, count("review_completion_events"));
     assertEquals(0, count("lesson_completion_events"));
     assertEquals(replays, count("idempotency_records"));
     assertEquals(session, get(path, 200));
@@ -381,6 +383,8 @@ class AttemptTest {
     post(attempt + "/hints", Map.of("session_revision", 2, "hint_id", "hint.missing"), 400);
     post(attempt + "/submission", "bad", valid.toString(), 400);
     assertEquals(0, count("skill_progress"));
+    assertEquals(0, count("review_schedule"));
+    assertEquals(0, count("review_completion_events"));
     post(attempt + "/submission", valid, 200);
     post(attempt + "/hints", Map.of("session_revision", 3, "hint_id", "hint.reason"), 409);
     post(path + "/attempts", request(3), 409);
@@ -437,7 +441,7 @@ class AttemptTest {
   }
 
   @Test
-  void awaitingAssessmentAndStoredReviewCannotBeMutated() throws Exception {
+  void awaitingAssessmentCannotBeMutatedAndReviewResumes() throws Exception {
     JsonNode started = start();
     String attempt = attemptPath(started);
     try (var c = database.getConnection();
@@ -460,7 +464,7 @@ class AttemptTest {
       q.setObject(1, UUID.fromString(session.path("session_id").asText()));
       q.executeUpdate();
     }
-    post(path + "/attempts", request(session.path("revision").asLong()), 409);
+    post(path + "/attempts", request(session.path("revision").asLong()), 200);
     post(
         "/v1/learning-sessions",
         Map.of("journey_id", "journey.openshift", "mode", "auto", "lesson_id", "oc-orientation"),
@@ -469,6 +473,109 @@ class AttemptTest {
         "/v1/learning-sessions",
         JsonData.parse(
             "{\"journey_id\":\"journey.openshift\",\"mode\":\"auto\",\"lesson_id\":null}"),
-        409);
+        200);
+  }
+
+  @Test
+  void reviewRemediationRewardsAndElapsedIntervals() throws Exception {
+    while (session.path("status").asText().equals("active")) {
+      JsonNode started = start();
+      post(attemptPath(started) + "/submission", submission(true), 200);
+      session = get(path, 200);
+    }
+    long lessons = count("lesson_completion_events");
+    // Upgrade reconstructs scheduling without rewriting old responses or creating rewards.
+    try (var c = database.getConnection()) {
+      LabSql.update(c, "DELETE FROM review_schedule WHERE learner_id=?", learner);
+      String migration =
+          Files.readString(Path.of("src/main/resources/db/migration/V4__review_policy.sql"));
+      String backfill =
+          migration.substring(
+              migration.indexOf("WITH evidence"),
+              migration.indexOf("CREATE TABLE review_completion_events"));
+      try (var statement = c.createStatement()) {
+        statement.execute(backfill);
+        statement.execute(backfill);
+      }
+      assertTrue(count("review_schedule") > 0);
+      assertEquals(1, count("reward_events"));
+      assertEquals(lessons, count("lesson_completion_events"));
+    }
+
+    try (var c = database.getConnection()) {
+      LabSql.update(
+          c,
+          "UPDATE review_schedule SET due_at='2020-01-01T00:00:00Z' WHERE learner_id=?",
+          learner);
+    }
+    session =
+        post(
+            "/v1/learning-sessions",
+            JsonData.parse(
+                "{\"journey_id\":\"journey.openshift\",\"mode\":\"auto\",\"lesson_id\":null}"),
+            200);
+    assertEquals("review", session.path("mode").asText());
+    path = "/v1/learning-sessions/" + session.path("session_id").asText();
+    JsonNode started = start();
+    JsonNode mistake = post(attemptPath(started) + "/submission", submission(false), 200);
+    assertTrue(mistake.path("rewards").isEmpty());
+    assertEquals("remediate", mistake.path("next_action").path("type").asText());
+    session = get(path, 200);
+    started = start();
+    String key = UUID.randomUUID().toString();
+    String answer = submission(true).toString();
+    String endpoint = attemptPath(started) + "/submission";
+    JsonNode corrected = post(endpoint, key, answer, 200);
+    assertEquals(corrected, post(endpoint, key, answer, 200));
+    assertEquals(5, corrected.path("rewards").get(0).path("xp").asInt());
+    String skill = corrected.path("rewards").get(0).path("subject_id").asText();
+    try (var c = database.getConnection();
+        var q =
+            LabSql.query(
+                c,
+                "SELECT interval_days FROM review_schedule WHERE learner_id=? AND skill_id=?",
+                learner,
+                skill);
+        var rows = q.executeQuery()) {
+      assertTrue(rows.next());
+      assertEquals(1, rows.getInt(1));
+    }
+    assertEquals(lessons, count("lesson_completion_events"));
+    // A later due review advances; artificial due time avoids waiting a day.
+    for (int expected : new int[] {7, 15, 15}) {
+      try (var c = database.getConnection()) {
+        LabSql.update(
+            c,
+            "UPDATE review_schedule SET due_at=due_at-interval '30 days' WHERE learner_id=? AND skill_id=?",
+            learner,
+            skill);
+      }
+      session =
+          post(
+              "/v1/learning-sessions",
+              JsonData.parse(
+                  "{\"journey_id\":\"journey.openshift\",\"mode\":\"review\",\"lesson_id\":null}"),
+              200);
+      path = "/v1/learning-sessions/" + session.path("session_id").asText();
+      started = start();
+      JsonNode result = post(attemptPath(started) + "/submission", submission(true), 200);
+      assertTrue(result.path("rewards").isEmpty());
+      try (var c = database.getConnection();
+          var q =
+              LabSql.query(
+                  c,
+                  "SELECT interval_days,due_at FROM review_schedule WHERE learner_id=? AND skill_id=?",
+                  learner,
+                  skill);
+          var rows = q.executeQuery()) {
+        assertTrue(rows.next());
+        assertEquals(expected, rows.getInt(1));
+        assertEquals(
+            Instant.parse(result.path("progress").path("confirmed_at").asText())
+                .plusSeconds(expected * 86400L)
+                .getEpochSecond(),
+            rows.getTimestamp(2).toInstant().getEpochSecond());
+      }
+    }
   }
 }

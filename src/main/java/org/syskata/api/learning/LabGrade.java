@@ -47,10 +47,12 @@ final class LabGrade {
       criteria.add(criterion);
     }
     result.set("references", JsonData.tree(bundle.entities("reference")));
-    Instant now = Instant.now();
+    Instant now = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MICROS);
     GradeProgress.evidence(c, state.learner, question, correct, assisted, now);
+    var reviewRewards = ReviewProgress.apply(c, state, question, correct, assisted, now);
     String next = AttemptAdvance.apply(c, state, bundle, correct);
     var rewards = GradeProgress.reward(c, state, now);
+    rewards.addAll(reviewRewards);
     if (correct) {
       JsonNode checkpoint = checkpoint(c, state.learner, question.path("id").asText(), now);
       if (checkpoint != null) rewards.add(checkpoint);
@@ -72,12 +74,7 @@ final class LabGrade {
 
   private static JsonNode checkpoint(Connection c, UUID learner, String checkpoint, Instant time)
       throws Exception {
-    String zone;
-    try (var q = LabSql.query(c, "SELECT timezone FROM learners WHERE id=?", learner);
-        var r = q.executeQuery()) {
-      r.next();
-      zone = r.getString(1);
-    }
+    String zone = PracticeDays.load(c, learner, time).zone();
     UUID id = UUID.randomUUID();
     try (var q =
         LabSql.query(

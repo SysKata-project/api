@@ -6,10 +6,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.UUID;
 
-/** Confirmed core evidence only. Scheduling/day/streak calculations belong to api #6. */
+/** Confirmed evidence and completion rewards in the grading transaction. */
 final class GradeProgress {
   private GradeProgress() {}
 
@@ -38,17 +37,12 @@ final class GradeProgress {
 
   static ArrayNode reward(Connection c, AttemptState state, Instant time) throws SQLException {
     ArrayNode rewards = JsonData.object().putArray("rewards");
-    if (!state.status.equals("completed")) return rewards;
+    if (!state.status.equals("completed") || state.plan.path("mode").asText().equals("review"))
+      return rewards;
     String lesson = state.plan.path("lesson_id").asText();
-    String timezone;
-    try (var q = c.prepareStatement("SELECT timezone FROM learners WHERE id=?")) {
-      q.setObject(1, state.learner);
-      try (var rows = q.executeQuery()) {
-        rows.next();
-        timezone = rows.getString(1);
-      }
-    }
-    String day = time.atZone(ZoneId.of(timezone)).toLocalDate().toString();
+    PracticeDays days = PracticeDays.load(c, state.learner, time);
+    String timezone = days.zone();
+    String day = days.date();
     try (var q =
         c.prepareStatement(
             "INSERT INTO lesson_completion_events VALUES (?,?,?,?::timestamptz,?,?::date)")) {
@@ -84,7 +78,7 @@ final class GradeProgress {
 
   static ObjectNode snapshot(Connection c, UUID learner, Instant time) throws SQLException {
     ObjectNode result = JsonData.object();
-    result.put("status", "partial");
+    PracticeDays days = PracticeDays.load(c, learner, time);
     result.put("confirmed_at", time.toString());
     try (var q =
         c.prepareStatement(
@@ -126,6 +120,8 @@ final class GradeProgress {
         }
       }
     }
+    days.append(result);
+    ReviewSummary.append(c, learner, result);
     return result;
   }
 }

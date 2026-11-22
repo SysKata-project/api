@@ -188,3 +188,27 @@ baseline JaCoCo production-line count. Its old fixed 300-method probe no longer
 violated the unchanged 80% line threshold after the application grew. The proof
 still requires the specific coverage failure and a corrected full verification;
 no production exclusion, suppression or threshold change was introduced.
+
+
+## API #6 review and practice validation — 2026-11-22
+
+`clean verify` passed with the pinned Java 25.0.5+8 toolchain and disposable
+PostgreSQL 17 fixture: 59 tests, no failures or skipped tests. Combined coverage
+exceeds the unchanged 80% line/branch gates; PMD, CPD, Checkstyle and Spotless pass.
+The 10 contract tests and all 64 positive/negative fixtures pass. Runtime response
+validation includes full progress, timezone changes, text grading and lab results.
+The five operational database/deletion tests pass with the new reward-period
+uniqueness constraint. Local documentation links and whitespace checks pass.
+
+Coverage includes initial schedule backfill, no duplicate XP from retained lesson
+facts, exact historical partial replay, review remediation and elapsed intervals,
+DST/local midnight, missed days, repeated/skipped date labels and timezone overlap
+rejection. The native PostgreSQL fixture and JVM can differ by milliseconds;
+synthetic lab observations wait for database submission time rather than weakening
+production callback timestamp validation.
+
+Required CI remains Java verification and gitleaks. CI also exercises the packaged
+identity flow, restore, dispatch restart and deliberate gate rejection/recovery.
+This change does not claim mobile integration, deployment, activated draft content
+or live OpenShift pilot acceptance. App #2 already tracks the historical partial
+response adapter required alongside the full snapshots now returned by API #6.

@@ -6,7 +6,7 @@ from validate_contracts import load_contract, operations, resolve, schema_errors
 
 root = Path(__file__).resolve().parents[1] / 'target/learning-contracts'
 document = load_contract()
-for name in ('listJourneys', 'enroll', 'getJourney', 'startSession', 'getSession', 'startAttempt', 'requestHint', 'revealAnswer', 'submitAttempt', 'getAttempt'):
+for name in ('listJourneys', 'enroll', 'getJourney', 'startSession', 'getSession', 'startAttempt', 'requestHint', 'revealAnswer', 'submitAttempt', 'getAttempt', 'getProgress', 'updateTimezone'):
     response = json.loads((root / (name + '.json')).read_text())
     operation = operations(document)[name][2]
     schema = resolve(document, operation['responses']['200'])['content']['application/json']['schema']

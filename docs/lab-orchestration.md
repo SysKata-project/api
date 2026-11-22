@@ -65,14 +65,14 @@ criterion must appear exactly once with a boolean outcome. Feedback comes from
 pinned content, not worker text. Only fixed infrastructure error codes are accepted.
 
 Application of a current result atomically saves attempt feedback, skill evidence,
-session advancement, checkpoint/lesson rewards, partial progress and the durable
+session advancement, checkpoint/lesson/review rewards, full progress and the durable
 callback receipt. An identical callback returns `duplicate`, including with a new
 idempotency key; conflicting evidence cannot replace the committed result. The
 existing unique reward constraints prevent repeat checkpoint XP across resets or
 content versions. A checkpoint grants 25 XP under its stable exercise ID; completing
 the enclosing lesson separately follows the existing 10 XP policy. Review/day/streak
-calculations remain deferred to api #6 under the owner-approved partial-progress
-contract. Historical results remain exact snapshots.
+calculations follow [review and practice](review-and-practice.md). Historical
+partial results remain exact snapshots.
 
 ## Build and configuration
 

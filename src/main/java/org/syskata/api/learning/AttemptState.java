@@ -46,7 +46,6 @@ final class AttemptState {
     if (body.path("session_revision").asLong() != revision)
       throw new ApiFailure(409, "stale_revision", revision);
     if (!status.equals("active")) throw new ApiFailure(409, "attempt_closed");
-    if (plan.path("mode").asText().equals("review")) throw new ApiFailure(409, "ineligible");
     validateInstance(body);
   }
 

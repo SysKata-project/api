@@ -3,7 +3,7 @@ info:
   title: SysKata learning API
   version: 1.2.0
   description: 'Implemented and planned endpoints; see docs/attempt-grading.md for
-    the owner-approved partial-progress boundary and disabled due review. Normative
+    historical partial-progress compatibility and docs/review-and-practice.md for review. Normative
     lifecycle, concurrency and security rules: docs/api-contract.md. Learner content
     schema 1.0.0; learning policy 1.0.0.'
 servers:
@@ -2356,7 +2356,7 @@ components:
     PartialProgress:
       type: object
       description: 'Confirmed grading evidence; review schedules and daily/streak
-        accounting are unavailable until api #6. Missing fields are not zero or false.'
+        accounting are unavailable in historical partial responses. Missing fields are not zero or false.'
       properties:
         revision:
           type: integer

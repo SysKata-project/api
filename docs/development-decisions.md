@@ -71,3 +71,11 @@ in a separate Java/Quarkus process built from this repository, sharing the API
 PostgreSQL database. The public API commits intents and replay responses before
 external dispatch. Lab execution and trusted evaluation remain in the labs
 repository and cannot write learning progress directly.
+
+## Review timezone overlap decision
+
+On 2026-11-22 the owner selected keeping a pending timezone change and rejecting
+a different destination until the transition ends. Repeated same-destination
+requests preserve the existing change. See [review and practice](review-and-practice.md).
+The api #4 partial-progress boundary above remains historical compatibility
+context; api #6 now supplies full schedules and daily accounting for new results.
