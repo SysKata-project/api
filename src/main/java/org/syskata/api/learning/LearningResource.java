@@ -13,8 +13,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
+import org.syskata.api.foundation.ApiFailure;
 
 @Path("/v1")
 @Authenticated
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Produces("application/json")
 public class LearningResource {
   @Inject LearningService service;
+  @Inject ProgressService progress;
   @Inject LearningStore store;
   @Context ContainerRequestContext context;
 
@@ -79,5 +82,34 @@ public class LearningResource {
   @Path("/learning-sessions/{session}")
   public Response session(@PathParam("session") String session) throws Exception {
     return response(store.read(learner(), LearningRequests.sessionId(session)));
+  }
+
+  @GET
+  @Path("/me/progress")
+  public Response progress() throws Exception {
+    return response(progress.read(learner()));
+  }
+
+  @POST
+  @Path("/me/timezone")
+  public Response timezone(@HeaderParam("Idempotency-Key") String key, String text)
+      throws Exception {
+    var body = JsonData.parse(text == null ? "null" : text);
+    if (!body.isObject() || body.size() != 1 || !body.has("timezone"))
+      throw new ApiFailure(400, "invalid_request");
+    LearningRequests.enrollment(body);
+    UUID learner = learner();
+    return response(
+        store.mutate(
+            learner,
+            "POST /v1/me/timezone",
+            LearningRequests.key(key),
+            body,
+            c ->
+                progress.timezone(
+                    c,
+                    learner,
+                    body.path("timezone").asText(),
+                    Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MICROS))));
   }
 }

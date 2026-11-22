@@ -120,11 +120,13 @@ public class AttemptService {
     JsonNode assistance = attempt.path("assistance");
     boolean assisted =
         assistance.path("revealed").asBoolean() || !assistance.path("hint_ids").isEmpty();
-    Instant time = Instant.now();
+    Instant time = Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MICROS);
     ObjectNode result = result(bundle, question, assessment, attempt, correct, assisted);
     GradeProgress.evidence(c, learner, question, correct, assisted, time);
+    var reviewRewards = ReviewProgress.apply(c, state, question, correct, assisted, time);
     String next = AttemptAdvance.apply(c, state, bundle, correct);
-    result.set("rewards", GradeProgress.reward(c, state, time));
+    reviewRewards.addAll(GradeProgress.reward(c, state, time));
+    result.set("rewards", reviewRewards);
     result.set("progress", GradeProgress.snapshot(c, learner, time));
     state.save(c);
     result.put("session_revision", state.revision);

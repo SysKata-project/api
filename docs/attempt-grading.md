@@ -2,7 +2,7 @@
 
 Tracking: [api #4](https://github.com/SysKata-project/api/issues/4).
 The [owner-approved interim boundary](development-decisions.md#grading-and-progress-ownership)
-keeps review schedules, daily goals and streaks in api #6.
+was completed by [api #6 review and practice](review-and-practice.md).
 
 ## Interface and transaction
 
@@ -52,7 +52,7 @@ objectives to be satisfied; no attempt/lives cap is introduced.
 The first completion of a stable lesson awards 10 XP. A full lesson replay records
 a new timestamped completion fact but awards no additional XP, including across
 content versions. `lesson_completion_events` stores session, learner, lesson,
-server timestamp, timezone and local date for future api #6 processing. Its primary
+server timestamp, timezone and local date for daily practice accounting. Its primary
 key deduplicates each session's completion and deletion cascades with the learner.
 Attempt history retains the raw answer and pinned result in the database, never
 in logs or public question payloads. No checkpoint award or trusted lab completion
@@ -60,28 +60,12 @@ is manufactured by this implementation.
 
 ## Partial progress and compatibility
 
-Grading returns `progress.status: partial`, revision, confirmed timestamp, total
-XP, completed lesson/checkpoint IDs and per-skill evidence counters. It omits
-review due dates/intervals, daily goals, streaks and timezone-transition state.
-Missing values mean unavailable, not zero, false or an empty schedule. The original
-full `Progress` remains in the contract for api #6 and full-progress fixtures;
-`GET /v1/me/progress` is not implemented here.
-
-Explicit review-session creation returns `409 ineligible`; automatic selection
-chooses eligible lesson work and does not select due review. Existing active
-lesson sessions still resume before considering a requested mode. A stored review
-session cannot be resumed for mutation while this boundary applies. Review
-selection code remains tested for api #6, but no runtime setting enables review.
-No grading operation updates `review_schedule` or grants review XP.
-
-Consumers of contract 1.0.0 require an adapter update before using these grading
-responses. In particular, the current Flutter `Progress` parser requires streak
-and daily-goal fields: app #2 must handle the partial variant explicitly and must
-not display invented daily values. Existing fixture-only app previews are not
-changed or represented as integrated. API #6 must retain historical partial
-responses for idempotent replay even after it begins producing full snapshots;
-it must define how retained grading/completion facts initialize its schedules
-and accounting without double credit.
+New grading results return full progress, including review schedules and daily
+accounting. Stored historical `progress.status: partial` responses remain unchanged
+for exact request replay and attempt recovery. Both variants remain valid under
+contract 1.1.0. Consumers must omit unavailable fields in partial history.
+See [review and practice](review-and-practice.md) for initialization, scheduling,
+timezone changes and the remaining app #2 consumer requirement.
 
 The actual seven-lesson pilot artifacts remain drafts and cannot pass normal
 release loading. Registering text capabilities does not publish or activate them.

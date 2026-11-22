@@ -14,12 +14,13 @@ The authenticated endpoints follow the existing [OpenAPI contract](../contracts/
 - `GET /v1/journeys` lists the selected compatible catalog and references.
 - `POST /v1/me/enrollments` creates or returns enrollment. The first enrollment
   chooses an IANA timezone; subsequent enrollments must match it. Timezone
-  changes remain api #6. Enrollment IDs are stable opaque UUIDs.
+  changes use `POST /v1/me/timezone`. Enrollment IDs are stable opaque UUIDs.
 - `GET /v1/me/journeys/{journey}` returns lessons with available/locked/completed
   states and unmet journey, unit, lesson and skill prerequisites.
 - `POST /v1/learning-sessions` resumes the active session for the requested
-  journey before considering a new mode/lesson. Under the approved api #4 interim boundary, `auto` chooses the first eligible
-  unfinished lesson and explicit review returns `409 ineligible` until api #6.
+  journey before considering a new mode/lesson. `auto` chooses due review first,
+  then the first eligible unfinished lesson.
+  Explicit review returns `409 ineligible` when no eligible due skill exists.
   Explicit lesson mode allows an unlocked completed lesson replay.
 - `GET /v1/learning-sessions/{session}` reads an owner-scoped persisted snapshot,
   including the open/awaiting-assessment attempt and its recorded assistance.
@@ -41,12 +42,12 @@ prerequisite cycles. Completing a prerequisite uses durable completion reward
 records; independent and assisted skill successes both satisfy skill prerequisites.
 XP does not measure mastery.
 
-The retained review-selection engine (not enabled at the runtime boundary until
-api #6) selects the earliest eligible due skill by UTC due instant, then skill ID,
+The review-selection engine selects the earliest eligible due skill by UTC due
+instant, then skill ID,
 and the first eligible exercise by stable ID. One due skill is selected per review
 session. Unavailable skills are skipped without rewriting their schedule. Its
 original due instant and skill ID are persisted for subsequent remediation/reward
-handling; api #6 still owns updating review schedules and daily accounting.
+handling; [review and practice](review-and-practice.md) describes atomic updates.
 
 `learning_sessions.selection_state` stores the lesson/mode, exercise queue,
 pending objectives, remediation queue, original review eligibility and the public
@@ -110,7 +111,7 @@ sessions remain readable with no current question/attempt or pending objectives.
 
 The initial api #3 production evaluator capability set was empty.
 [API #4](attempt-grading.md) now implements and registers the three text evaluators;
-the interim boundary disables due-review issuance until api #6.
+due-review issuance is enabled by the review and practice implementation.
 Neither fixture evaluators nor the draft pilot can pass normal loading. Tests use
 a package-scoped fixture reader; there is no HTTP endpoint or application setting
 to enable it. Implemented grading and trusted lab adapters must explicitly extend

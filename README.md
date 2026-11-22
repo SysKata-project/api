@@ -71,5 +71,7 @@ enrollment and durable deterministic selection. Its pilot fixtures are test-only
 production activation remains gated on grading and trusted checkpoint integration.
 
 Atomic text grading and the owner-approved partial-progress contract are documented
-in [attempt grading](docs/attempt-grading.md). Review/day/streak calculations remain
-api #6; no pilot content release is activated.
+in [attempt grading](docs/attempt-grading.md). Review/day/streak calculations follow
+[review and practice](docs/review-and-practice.md); no pilot content release is activated.
+
+New results return full progress; historical partial responses remain replayable.

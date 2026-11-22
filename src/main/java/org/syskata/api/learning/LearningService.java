@@ -49,9 +49,11 @@ public class LearningService {
     String journey = request.path("journey_id").asText();
     catalog.current().entity(journey, "journey");
     String timezone = request.path("timezone").asText();
+    PracticeDays.load(
+        c, learner, java.time.Instant.now().truncatedTo(java.time.temporal.ChronoUnit.MICROS));
     try (var q =
         c.prepareStatement(
-            "SELECT timezone,EXISTS(SELECT 1 FROM enrollments WHERE learner_id=?) FROM learners WHERE id=?")) {
+            "SELECT timezone,(EXISTS(SELECT 1 FROM enrollments WHERE learner_id=?) OR EXISTS(SELECT 1 FROM timezone_changes WHERE learner_id=learners.id)) FROM learners WHERE id=?")) {
       q.setObject(1, learner);
       q.setObject(2, learner);
       try (var rows = q.executeQuery()) {
@@ -105,13 +107,10 @@ public class LearningService {
       try (var rows = q.executeQuery()) {
         if (rows.next()) {
           JsonNode existing = store.session(c, learner, rows.getObject(1, UUID.class));
-          if (existing.path("mode").asText().equals("review"))
-            throw new ApiFailure(409, "ineligible");
           return existing;
         }
       }
     }
-    if (request.path("mode").asText().equals("review")) throw new ApiFailure(409, "ineligible");
     requireEnrollment(c, learner, journey);
     Bundle bundle = catalog.current();
     ObjectNode plan = SessionSelection.choose(c, learner, bundle, request);
