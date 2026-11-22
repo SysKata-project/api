@@ -182,3 +182,9 @@ this text-grading deliverable.
   responses. They do not prove live OpenShift, mobile or deployed pilot behavior.
   Draft content remains inactive. The account-deletion purge/receipt limitation is
   explicitly recorded in [lab orchestration](lab-orchestration.md).
+
+The line-coverage rejection probe now scales its entirely untested class to the
+baseline JaCoCo production-line count. Its old fixed 300-method probe no longer
+violated the unchanged 80% line threshold after the application grew. The proof
+still requires the specific coverage failure and a corrected full verification;
+no production exclusion, suppression or threshold change was introduced.
