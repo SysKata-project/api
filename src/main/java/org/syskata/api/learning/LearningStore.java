@@ -41,7 +41,7 @@ public class LearningStore {
     }
   }
 
-  private void lockLearner(Connection c, UUID learner) throws SQLException {
+  static void lockLearner(Connection c, UUID learner) throws SQLException {
     try (var q = c.prepareStatement("SELECT disabled_at FROM learners WHERE id=? FOR UPDATE")) {
       q.setObject(1, learner);
       try (var rows = q.executeQuery()) {

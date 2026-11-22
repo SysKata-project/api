@@ -40,6 +40,10 @@ jobs:
         run: CONTAINER_ENGINE=docker sh scripts/verify-restore.sh
       - name: Prove gate rejection and recovery
         run: python3 scripts/prove-quality-gates.py
+      - name: Verify packaged dispatch process restart
+        run: |
+          ./mvnw -B -ntp package -DskipTests -Dquarkus.package.main-class=dispatch -Dquarkus.profile=dispatch -Dquarkus.package.output-directory="$RUNNER_TEMP/syskata-dispatch"
+          .venv-operations/bin/python scripts/verify-dispatch.py --jar "$RUNNER_TEMP/syskata-dispatch/quarkus-run.jar" --report target/dispatch-evidence/summary.json
       - name: Remove disposable PostgreSQL fixture
         if: always()
         run: CONTAINER_ENGINE=docker sh scripts/test-database.sh stop
@@ -58,3 +62,4 @@ jobs:
             target/gate-evidence/summary.json
             target/restore-evidence/summary.json
             target/identity-smoke.json
+            target/dispatch-evidence/summary.json

@@ -10,7 +10,7 @@ import jakarta.enterprise.event.Observes;
 public class TransportFailures {
   public void configure(@Observes Router router) {
     router
-        .route("/v1/*")
+        .routeWithRegex("/(internal/)?v1/.*")
         .order(Integer.MIN_VALUE)
         .handler(BodyHandler.create().setBodyLimit(65536).setHandleFileUploads(false));
     router

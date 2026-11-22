@@ -1,11 +1,11 @@
 openapi: 3.1.1
 info:
   title: SysKata learning API
-  version: 1.1.0
-  description: 'Implemented and planned endpoints; see docs/attempt-grading.md for the
-    owner-approved partial-progress boundary and disabled due review. Normative lifecycle,
-    concurrency and security rules: docs/api-contract.md. Learner content schema 1.0.0;
-    learning policy 1.0.0.'
+  version: 1.2.0
+  description: 'Implemented and planned endpoints; see docs/attempt-grading.md for
+    the owner-approved partial-progress boundary and disabled due review. Normative
+    lifecycle, concurrency and security rules: docs/api-contract.md. Learner content
+    schema 1.0.0; learning policy 1.0.0.'
 servers:
 - url: https://api.example.invalid
   description: Placeholder; configure per environment.
@@ -994,6 +994,96 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeletionRequest'
+  /v1/lab-sessions/{lab_session_id}/fault-stage:
+    post:
+      operationId: requestFaultStage
+      summary: Request the trusted foundations fault stage
+      description: Persist the learner request for the controlled foundations fault
+        stage. Does not grade, award progress or extend the lab lease.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaultStage'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabMutation'
+    get:
+      operationId: getFaultStage
+      summary: Poll trusted fault-stage readiness
+      description: Read bounded stage status for the owned current lab generation.
+        No commands, credentials or trusted evidence are returned.
+      tags:
+      - Learner API
+      parameters:
+      - $ref: '#/components/parameters/lab_session_id'
+      responses:
+        '200':
+          description: 'Successful response. '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaultStage'
+          headers:
+            Cache-Control:
+              schema:
+                const: no-store
+              description: No response caching.
+        '400':
+          $ref: '#/components/responses/Error400'
+        '401':
+          $ref: '#/components/responses/Error401'
+        '403':
+          $ref: '#/components/responses/Error403'
+        '404':
+          $ref: '#/components/responses/Error404'
+        '409':
+          $ref: '#/components/responses/Error409'
+        '410':
+          $ref: '#/components/responses/Error410'
+        '413':
+          $ref: '#/components/responses/Error413'
+        '415':
+          $ref: '#/components/responses/Error415'
+        '429':
+          $ref: '#/components/responses/Error429'
+        '503':
+          $ref: '#/components/responses/Error503'
 components:
   securitySchemes:
     LearnerBearer:
@@ -2265,8 +2355,8 @@ components:
       additionalProperties: false
     PartialProgress:
       type: object
-      description: 'Confirmed grading evidence; review schedules and daily/streak accounting
-        are unavailable until api #6. Missing fields are not zero or false.'
+      description: 'Confirmed grading evidence; review schedules and daily/streak
+        accounting are unavailable until api #6. Missing fields are not zero or false.'
       properties:
         revision:
           type: integer
@@ -2760,6 +2850,29 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
+      additionalProperties: false
+    FaultStage:
+      type: object
+      properties:
+        lab_session_id:
+          type: string
+          pattern: ^[a-zA-Z0-9][a-zA-Z0-9._-]{0,127}$
+        generation:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+        state:
+          type: string
+          enum:
+          - not_requested
+          - pending
+          - complete
+          - infrastructure_error
+          - superseded
+      required:
+      - lab_session_id
+      - generation
+      - state
       additionalProperties: false
   responses:
     Error400:

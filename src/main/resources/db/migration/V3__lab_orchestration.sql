@@ -1,0 +1,10 @@
+ALTER TABLE lab_sessions ADD COLUMN scenario text CHECK (scenario IN ('foundations','administration'));
+ALTER TABLE lab_sessions ADD COLUMN remote_revision bigint NOT NULL DEFAULT 0;
+ALTER TABLE lab_sessions ADD COLUMN cleanup_complete boolean NOT NULL DEFAULT false;
+ALTER TABLE lab_sessions ADD COLUMN allocated_at timestamptz;
+ALTER TABLE assessments ADD COLUMN dispatch jsonb;
+ALTER TABLE assessments ADD COLUMN callback jsonb;
+ALTER TABLE assessments ADD COLUMN disposition text;
+CREATE UNIQUE INDEX one_assessment_per_attempt ON assessments(attempt_id);
+CREATE INDEX dispatch_due ON outbox_jobs(available_at) WHERE completed_at IS NULL;
+ALTER TABLE outbox_jobs ADD COLUMN sequence bigserial;

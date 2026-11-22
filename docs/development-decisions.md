@@ -63,3 +63,11 @@ sessions remain unavailable until api #6. No placeholder values represent these
 deferred calculations. Preserve timestamped grading/completion evidence for api #6;
 this boundary defers api #4's review-change writes to api #6, without waiving
 transactional attempts, skill evidence, lesson rewards or replay safety.
+
+## Durable lab dispatch process
+
+Accepted by the project owner on 2026-11-22 for api #5: run durable lab dispatch
+in a separate Java/Quarkus process built from this repository, sharing the API
+PostgreSQL database. The public API commits intents and replay responses before
+external dispatch. Lab execution and trusted evaluation remain in the labs
+repository and cannot write learning progress directly.
